@@ -2,7 +2,7 @@
   "name": "هات — لوحة التحكم",
   "short_name": "هات إدارة",
   "description": "لوحة تحكم إدارة طلبات هات — متابعة الطلبات والطيارين والمناطق",
-  "start_url": "./admin.html",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
