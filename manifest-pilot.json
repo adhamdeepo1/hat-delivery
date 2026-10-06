@@ -2,6 +2,7 @@
   "name": "هات — تطبيق الطيار",
   "short_name": "هات طيار",
   "description": "تطبيق الطيار لاستلام وتوصيل طلبات هات",
+  "id": "./index3.html",
   "start_url": "./index3.html",
   "scope": "./",
   "display": "standalone",

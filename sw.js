@@ -1,11 +1,11 @@
 // Service Worker مشترك للـ 3 تطبيقات (admin/client/driver)
 // الهدف: تثبيت PWA كامل + شاشة أوفلاين لطيفة بدل خطأ المتصفح — مش تخزين بيانات الطلبات
 // (البيانات دي لازم تفضل لايف من Firestore، تخزينها هيبوظ التزامن)
-const CACHE_NAME = 'hat-shell-v3';
+const CACHE_NAME = 'hat-shell-v4';
 const PRECACHE_URLS = [
-  './admin.html',
-  './client.html',
-  './driver.html',
+  './index.html',
+  './index2.html',
+  './index3.html',
   './manifest-admin.json',
   './manifest-client.json',
   './manifest-pilot.json',
@@ -45,8 +45,10 @@ self.addEventListener('fetch', (event) => {
     // صفحة HTML: نت الأول (عشان النسخة الأحدث)، ولو مفيش نت هات من الكاش
     event.respondWith(
       fetch(req).then(res => {
-        const copy = res.clone();
-        caches.open(CACHE_NAME).then(c => c.put(req, copy));
+        if (res.ok) { // مانخزّنش ردود الخطأ (404/500)
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then(c => c.put(req, copy));
+        }
         return res;
       }).catch(() =>
         caches.match(req).then(cached => cached || caches.match('./' + url.pathname.split('/').pop()))
@@ -59,8 +61,10 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(req).then(cached => {
       const fetchPromise = fetch(req).then(res => {
-        const copy = res.clone();
-        caches.open(CACHE_NAME).then(c => c.put(req, copy));
+        if (res.ok) {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then(c => c.put(req, copy));
+        }
         return res;
       }).catch(() => cached);
       return cached || fetchPromise;

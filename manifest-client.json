@@ -2,6 +2,7 @@
   "name": "هات — خدمة التوصيل",
   "short_name": "هات",
   "description": "هات — خدمة توصيل سريعة من أي محل حواليك",
+  "id": "./index2.html",
   "start_url": "./index2.html",
   "scope": "./",
   "display": "standalone",
