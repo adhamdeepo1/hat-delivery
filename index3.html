@@ -1,0 +1,2566 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#FF6B35"/>
+<title>هات — الطيار 🛵</title>
+<!-- PWA -->
+<link rel="manifest" href="manifest-pilot.json"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="هات — طيار"/>
+<link rel="apple-touch-icon" href="icon-192.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --primary:#FF6B35; --primary-d:#E85520; --primary-glow:rgba(255,107,53,0.22);
+  --accent:#FFD166; --success:#06D6A0; --danger:#EF476F; --info:#4CC9F0; --purple:#9B5DE5;
+  --dark:#0A0A0F; --dark2:#10101A; --dark3:#16161F; --surface:#1E1E2A; --surface2:#262633;
+  --border:rgba(255,255,255,0.06); --border2:rgba(255,255,255,0.12);
+  --text:#F0F0FA; --text-muted:#6E6E8A; --text-dim:#3A3A52;
+  --r:18px; --r-sm:12px; --r-xs:8px;
+}
+:root[data-theme="light"] {
+  --dark:#F4F4F8; --dark2:#FFFFFF; --dark3:#EDEDF3; --surface:#FFFFFF; --surface2:#F0F0F6;
+  --border:rgba(20,20,35,0.08); --border2:rgba(20,20,35,0.14);
+  --text:#171724; --text-muted:#6B6B85; --text-dim:#A6A6BC;
+  --primary-glow:rgba(255,107,53,0.16);
+}
+:root[data-theme="light"] .status-badge, :root[data-theme="light"] .payment-tag { filter: none; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Cairo',sans-serif;direction:rtl;background:var(--dark);color:var(--text);font-size:14px}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--surface2);border-radius:4px}
+
+/* ===== LOGIN SCREEN ===== */
+#login-screen {
+  position:fixed;inset:0;background:var(--dark);z-index:9999;
+  display:flex;align-items:center;justify-content:center;
+  overflow:auto;padding:20px;
+}
+#login-screen.hidden{display:none}
+
+.login-bg{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.login-bg::before{
+  content:'';position:absolute;width:600px;height:600px;
+  top:-150px;right:-150px;
+  background:radial-gradient(circle,rgba(255,107,53,0.15),transparent 65%);
+  animation:bgDrift 10s ease-in-out infinite;
+}
+.login-bg::after{
+  content:'';position:absolute;width:500px;height:500px;
+  bottom:-100px;left:-100px;
+  background:radial-gradient(circle,rgba(76,201,240,0.08),transparent 65%);
+  animation:bgDrift 13s ease-in-out infinite reverse;
+}
+@keyframes bgDrift{0%,100%{transform:scale(1) translate(0,0)}50%{transform:scale(1.08) translate(15px,-10px)}}
+
+.login-card{
+  position:relative;z-index:1;
+  background:var(--dark2);
+  border:1px solid var(--border2);
+  border-radius:28px;
+  padding:40px 28px;
+  width:min(380px,100%);
+  box-shadow:0 40px 100px rgba(0,0,0,0.7);
+  animation:cardIn 0.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(30px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+.login-logo{
+  width:76px;height:76px;
+  background:linear-gradient(135deg,var(--primary),#FF9A6C);
+  border-radius:22px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:38px;
+  margin:0 auto 22px;
+  box-shadow:0 16px 50px var(--primary-glow);
+  animation:logoPulse 3s ease-in-out infinite;
+}
+@keyframes logoPulse{0%,100%{box-shadow:0 16px 50px var(--primary-glow)}50%{box-shadow:0 16px 60px rgba(255,107,53,0.4)}}
+
+.login-title{font-size:24px;font-weight:900;text-align:center;margin-bottom:4px}
+.login-title span{
+  background:linear-gradient(135deg,#FF6B35,#FFD166);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.login-sub{font-size:13px;color:var(--text-muted);text-align:center;margin-bottom:30px}
+
+.inp-group{margin-bottom:16px}
+.inp-label{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;display:flex;align-items:center;gap:6px}
+.inp-wrap{position:relative}
+.inp-icon{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none}
+.login-inp{
+  width:100%;padding:14px 44px 14px 16px;
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--r-sm);font-size:15px;font-family:'Cairo',sans-serif;
+  direction:rtl;outline:none;color:var(--text);transition:all 0.25s;
+}
+.login-inp::placeholder{color:var(--text-dim);font-size:13px}
+.login-inp:focus{border-color:var(--primary);background:rgba(255,107,53,0.04);box-shadow:0 0 0 4px rgba(255,107,53,0.1)}
+.login-inp.error{border-color:var(--danger);background:rgba(239,71,111,0.04)}
+
+.pass-toggle{position:absolute;left:14px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:16px;color:var(--text-muted);user-select:none;transition:color 0.2s}
+.pass-toggle:hover{color:var(--text)}
+
+.login-error{
+  color:var(--danger);font-size:12px;font-weight:700;
+  margin-bottom:14px;text-align:center;
+  display:none;animation:shake 0.4s ease;
+}
+.login-error.show{display:block}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+.login-btn{
+  width:100%;padding:15px;
+  background:linear-gradient(135deg,var(--primary),var(--primary-d));
+  color:#fff;border:none;border-radius:var(--r-sm);
+  font-family:'Cairo',sans-serif;font-size:16px;font-weight:800;
+  cursor:pointer;transition:all 0.25s;
+  box-shadow:0 8px 24px var(--primary-glow);
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(255,107,53,0.4)}
+.login-btn:active{transform:scale(0.98)}
+.login-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none}
+
+/* ===== APP LAYOUT ===== */
+#app{display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden}
+#app.hidden{display:none}
+
+/* ===== TOP BAR ===== */
+.topbar{
+  background:var(--dark2);border-bottom:1px solid var(--border);
+  padding:0 16px;height:60px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.tb-brand{display:flex;align-items:center;gap:10px}
+.tb-brand-icon{
+  width:38px;height:38px;
+  background:linear-gradient(135deg,var(--primary),#FF9A6C);
+  border-radius:11px;display:flex;align-items:center;justify-content:center;
+  font-size:18px;box-shadow:0 4px 14px var(--primary-glow);
+}
+.tb-brand-name{font-size:18px;font-weight:900;background:linear-gradient(135deg,#FF6B35,#FFD166);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.tb-brand-sub{font-size:9px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase}
+
+.tb-right{display:flex;align-items:center;gap:10px}
+.driver-badge{
+  display:flex;align-items:center;gap:7px;
+  background:var(--surface);border:1px solid var(--border2);
+  padding:6px 12px;border-radius:20px;
+}
+.driver-avatar{
+  width:28px;height:28px;background:linear-gradient(135deg,var(--primary),#FF9A6C);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;
+}
+.driver-name{font-size:12px;font-weight:700;color:var(--text);max-width:80px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+
+.online-pill{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(6,214,160,0.08);border:1px solid rgba(6,214,160,0.2);
+  padding:5px 11px;border-radius:20px;font-size:11px;color:var(--success);font-weight:700;
+}
+.online-dot{width:7px;height:7px;border-radius:50%;background:var(--success);animation:livePing 1.5s ease infinite;flex-shrink:0}
+@keyframes livePing{0%{box-shadow:0 0 0 0 rgba(6,214,160,0.6)}70%{box-shadow:0 0 0 8px rgba(6,214,160,0)}100%{box-shadow:0 0 0 0 rgba(6,214,160,0)}}
+
+.logout-btn{
+  width:34px;height:34px;background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:14px;transition:all 0.2s;color:var(--text-muted);
+}
+.logout-btn:hover{background:rgba(239,71,111,0.1);border-color:rgba(239,71,111,0.2);color:var(--danger)}
+
+/* ===== TABS ===== */
+.tabs-bar{
+  background:var(--dark2);border-bottom:1px solid var(--border);
+  display:flex;flex-shrink:0;
+}
+.tab-btn{
+  flex:1;padding:12px 8px;border:none;background:transparent;
+  font-family:'Cairo',sans-serif;font-size:12px;font-weight:700;
+  color:var(--text-muted);cursor:pointer;transition:all 0.2s;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  border-bottom:2px solid transparent;position:relative;
+}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--primary);border-bottom-color:var(--primary)}
+.tab-icon{font-size:18px}
+.tab-badge{
+  position:absolute;top:8px;right:calc(50% - 18px);
+  background:var(--danger);color:#fff;font-size:10px;font-weight:800;
+  padding:1px 6px;border-radius:10px;min-width:18px;text-align:center;
+  display:none;
+}
+.tab-badge.show{display:block;animation:badgePop 0.3s cubic-bezier(0.34,1.56,0.64,1)}
+@keyframes badgePop{from{transform:scale(0)}to{transform:scale(1)}}
+
+/* ===== MAIN CONTENT ===== */
+.main-content{flex:1;overflow:hidden;position:relative}
+.tab-panel{position:absolute;inset:0;overflow-y:auto;display:none;padding:16px;padding-bottom:32px}
+.tab-panel.active{display:block}
+
+/* ===== ORDERS TAB ===== */
+.orders-header{
+  display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;
+}
+.orders-title{font-size:16px;font-weight:800}
+.orders-count{
+  background:var(--surface);border:1px solid var(--border);
+  padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;color:var(--text-muted);
+}
+
+.filter-strip{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:2px}
+.filter-strip::-webkit-scrollbar{height:0}
+.filter-chip{
+  padding:6px 14px;border-radius:20px;border:1px solid var(--border);
+  background:var(--surface);color:var(--text-muted);font-family:'Cairo',sans-serif;
+  font-size:12px;font-weight:700;cursor:pointer;transition:all 0.18s;white-space:nowrap;
+}
+.filter-chip:hover{border-color:var(--border2);color:var(--text)}
+.filter-chip.active{background:rgba(255,107,53,0.1);color:var(--primary);border-color:rgba(255,107,53,0.25)}
+
+/* ===== ORDER CARD ===== */
+.order-card{
+  background:var(--dark2);border:1px solid var(--border);
+  border-radius:var(--r);padding:16px;margin-bottom:12px;
+  transition:all 0.2s;cursor:pointer;
+  animation:cardSlide 0.35s cubic-bezier(0.34,1.2,0.64,1);
+}
+@keyframes cardSlide{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.order-card:hover{border-color:var(--border2);background:var(--dark3)}
+.order-card.status-pending{border-right:3px solid var(--accent)}
+.order-card.status-preparing{border-right:3px solid var(--info)}
+.order-card.status-ready{border-right:3px solid var(--success)}
+.order-card.status-delivered{border-right:3px solid var(--text-dim);opacity:0.7}
+.order-card.status-cancelled{border-right:3px solid var(--danger);opacity:0.6}
+
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;gap:10px}
+.card-code{font-size:18px;font-weight:900;color:var(--primary);line-height:1}
+.card-time{font-size:11px;color:var(--text-muted);margin-top:2px}
+.status-badge{
+  padding:4px 10px;border-radius:20px;font-size:11px;font-weight:800;
+  white-space:nowrap;flex-shrink:0;
+}
+.badge-pending{background:rgba(255,209,102,0.12);color:var(--accent)}
+.badge-preparing{background:rgba(76,201,240,0.12);color:var(--info)}
+.badge-ready{background:rgba(6,214,160,0.12);color:var(--success)}
+.badge-delivered{background:rgba(255,255,255,0.05);color:var(--text-muted)}
+.badge-cancelled{background:rgba(239,71,111,0.12);color:var(--danger)}
+
+.card-client{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.client-avatar{
+  width:38px;height:38px;background:linear-gradient(135deg,var(--surface2),var(--surface));
+  border:1px solid var(--border2);border-radius:12px;
+  display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;
+}
+.client-info{}
+.client-name{font-size:14px;font-weight:700}
+.client-phone{font-size:12px;color:var(--text-muted);direction:ltr;text-align:right}
+
+.card-address{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-sm);padding:10px 12px;margin-bottom:10px;
+  font-size:13px;color:var(--text);
+  display:flex;align-items:flex-start;gap:8px;
+}
+.addr-icon{font-size:15px;flex-shrink:0;margin-top:1px}
+.addr-text{}
+.addr-zone{font-weight:700;margin-bottom:2px}
+.addr-detail{color:var(--text-muted);font-size:12px;line-height:1.5}
+
+.card-items{font-size:12px;color:var(--text-muted);margin-bottom:12px;line-height:1.6;border-right:2px solid var(--border2);padding-right:10px}
+.card-items strong{color:var(--text)}
+
+.card-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.card-amounts{display:flex;gap:12px;flex-wrap:wrap}
+.amount-item{text-align:center}
+.amount-num{font-size:16px;font-weight:900;color:var(--accent)}
+.amount-lbl{font-size:10px;color:var(--text-muted);font-weight:600}
+
+.payment-tag{
+  padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;
+}
+.pay-cash{background:rgba(6,214,160,0.1);color:var(--success)}
+.pay-vodafone{background:rgba(239,71,111,0.1);color:var(--danger)}
+.pay-instapay{background:rgba(155,93,229,0.1);color:var(--purple)}
+.pay-other{background:rgba(255,255,255,0.05);color:var(--text-muted)}
+
+/* ===== STATUS ACTIONS ===== */
+.status-actions{margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap}
+.action-btn{
+  flex:1;min-width:120px;padding:10px 14px;border:none;border-radius:var(--r-sm);
+  font-family:'Cairo',sans-serif;font-size:13px;font-weight:800;
+  cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.btn-preparing{background:rgba(76,201,240,0.1);color:var(--info);border:1px solid rgba(76,201,240,0.2)}
+.btn-preparing:hover{background:rgba(76,201,240,0.2)}
+.btn-ready{background:rgba(6,214,160,0.1);color:var(--success);border:1px solid rgba(6,214,160,0.2)}
+.btn-ready:hover{background:rgba(6,214,160,0.2)}
+.btn-delivered{background:rgba(255,107,53,0.1);color:var(--primary);border:1px solid rgba(255,107,53,0.2)}
+.btn-delivered:hover{background:rgba(255,107,53,0.2)}
+.btn-note{background:var(--surface);color:var(--text-muted);border:1px solid var(--border)}
+.btn-note:hover{background:var(--surface2);color:var(--text)}
+.btn-accept{background:rgba(6,214,160,0.12);color:var(--success);border:1px solid rgba(6,214,160,0.25)}
+.btn-accept:hover{background:rgba(6,214,160,0.22)}
+.btn-reject{background:rgba(239,71,111,0.1);color:var(--danger);border:1px solid rgba(239,71,111,0.2)}
+.btn-reject:hover{background:rgba(239,71,111,0.18)}
+.pending-glow{animation:pendingPulse 2s ease-in-out infinite}
+@keyframes pendingPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,209,102,0.2)}50%{box-shadow:0 0 0 8px rgba(255,209,102,0)}}
+
+/* ===== NOTE INPUT (inline) ===== */
+.note-input-wrap{display:none;padding-top:10px;animation:noteIn 0.25s ease}
+.note-input-wrap.show{display:block}
+@keyframes noteIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.note-inp{
+  width:100%;padding:10px 14px;background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--r-sm);font-size:14px;font-family:'Cairo',sans-serif;
+  direction:rtl;outline:none;color:var(--text);transition:all 0.2s;resize:none;
+}
+.note-inp:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow)}
+.note-send-btn{
+  margin-top:8px;padding:8px 20px;background:var(--primary);color:#fff;border:none;
+  border-radius:var(--r-sm);font-family:'Cairo',sans-serif;font-size:13px;font-weight:800;
+  cursor:pointer;transition:all 0.2s;
+}
+.note-send-btn:hover{background:var(--primary-d)}
+
+/* ===== EMPTY STATE ===== */
+.empty-state{
+  text-align:center;padding:60px 20px;
+  color:var(--text-muted);
+}
+.empty-icon{font-size:50px;margin-bottom:14px;opacity:0.4}
+.empty-title{font-size:16px;font-weight:700;margin-bottom:6px;color:var(--text-dim)}
+.empty-sub{font-size:13px}
+
+/* ===== EARNINGS TAB ===== */
+.earnings-summary{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;
+}
+.earn-card{
+  background:var(--dark2);border:1px solid var(--border);
+  border-radius:var(--r);padding:16px;text-align:center;
+}
+.earn-card.full{grid-column:1/-1}
+.earn-icon{font-size:26px;margin-bottom:8px}
+.earn-num{font-size:26px;font-weight:900;color:var(--accent);line-height:1;margin-bottom:4px}
+.earn-lbl{font-size:11px;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:1px}
+
+.earn-section-title{font-size:13px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;margin-top:6px}
+
+.earn-row{
+  background:var(--dark2);border:1px solid var(--border);
+  border-radius:var(--r-sm);padding:12px 14px;margin-bottom:8px;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+}
+.earn-row-info{}
+.earn-row-code{font-size:13px;font-weight:700;color:var(--primary)}
+.earn-row-time{font-size:11px;color:var(--text-muted)}
+.earn-row-amount{font-size:16px;font-weight:900;color:var(--accent)}
+
+/* ===== PROFILE TAB ===== */
+.profile-card{
+  background:var(--dark2);border:1px solid var(--border);
+  border-radius:var(--r);padding:24px;text-align:center;margin-bottom:14px;
+}
+.profile-avatar{
+  width:80px;height:80px;
+  background:linear-gradient(135deg,var(--primary),#FF9A6C);
+  border-radius:24px;display:flex;align-items:center;justify-content:center;
+  font-size:40px;margin:0 auto 14px;
+  box-shadow:0 10px 30px var(--primary-glow);
+}
+.profile-name{font-size:22px;font-weight:900;margin-bottom:4px}
+.profile-role{font-size:12px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase}
+
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.stat-box{
+  background:var(--dark2);border:1px solid var(--border);
+  border-radius:var(--r-sm);padding:14px;text-align:center;
+}
+.stat-num{font-size:22px;font-weight:900;color:var(--primary);line-height:1;margin-bottom:4px}
+.stat-lbl{font-size:10px;color:var(--text-muted);font-weight:600;text-transform:uppercase}
+
+.profile-section{
+  background:var(--dark2);border:1px solid var(--border);
+  border-radius:var(--r);overflow:hidden;margin-bottom:14px;
+}
+.profile-section-title{
+  padding:12px 16px;font-size:12px;font-weight:700;color:var(--text-muted);
+  text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border);
+}
+.profile-row{
+  padding:14px 16px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);
+}
+.profile-row:last-child{border-bottom:none}
+.profile-row-label{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--text-muted)}
+.profile-row-val{font-size:13px;font-weight:700;color:var(--text)}
+
+.logout-big-btn{
+  width:100%;padding:14px;
+  background:rgba(239,71,111,0.1);color:var(--danger);
+  border:1px solid rgba(239,71,111,0.2);border-radius:var(--r-sm);
+  font-family:'Cairo',sans-serif;font-size:14px;font-weight:800;
+  cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.logout-big-btn:hover{background:rgba(239,71,111,0.18)}
+
+/* ===== TOAST ===== */
+.toast{
+  position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--surface2);border:1px solid var(--border2);
+  padding:12px 22px;border-radius:20px;font-size:13px;font-weight:700;
+  box-shadow:0 16px 40px rgba(0,0,0,0.5);
+  opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap;z-index:9000;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.success{border-color:rgba(6,214,160,0.3);color:var(--success)}
+.toast.error{border-color:rgba(239,71,111,0.3);color:var(--danger)}
+
+/* ===== NOTE MODAL ===== */
+.modal-backdrop{
+  position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);
+  z-index:8000;display:flex;align-items:flex-end;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity 0.3s;
+}
+.modal-backdrop.show{opacity:1;pointer-events:auto}
+.modal-sheet{
+  background:var(--dark2);border:1px solid var(--border2);
+  border-radius:24px 24px 0 0;padding:28px 24px;width:min(480px,100%);
+  transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.34,1.2,0.64,1);
+}
+.modal-backdrop.show .modal-sheet{transform:translateY(0)}
+.modal-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 20px}
+.modal-title{font-size:18px;font-weight:900;margin-bottom:16px;text-align:center}
+.modal-textarea{
+  width:100%;padding:13px 16px;background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--r-sm);font-size:14px;font-family:'Cairo',sans-serif;
+  direction:rtl;outline:none;color:var(--text);resize:none;min-height:100px;
+}
+.modal-textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow)}
+.modal-actions{display:flex;gap:10px;margin-top:14px}
+.modal-cancel{
+  flex:1;padding:13px;background:var(--surface);color:var(--text-muted);
+  border:1px solid var(--border);border-radius:var(--r-sm);
+  font-family:'Cairo',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:all 0.2s;
+}
+.modal-cancel:hover{background:var(--surface2)}
+.modal-confirm{
+  flex:2;padding:13px;background:linear-gradient(135deg,var(--primary),var(--primary-d));
+  color:#fff;border:none;border-radius:var(--r-sm);
+  font-family:'Cairo',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:all 0.2s;
+  box-shadow:0 6px 20px var(--primary-glow);
+}
+.modal-confirm:hover{opacity:0.9}
+
+/* ===== LOADING SPINNER ===== */
+.spinner{
+  display:inline-block;width:16px;height:16px;
+  border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;
+  border-radius:50%;animation:spin 0.6s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ===== NEW ORDER NOTIF ===== */
+.new-order-notif{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120px);
+  background:linear-gradient(135deg,var(--primary),var(--primary-d));
+  color:#fff;padding:14px 26px;border-radius:24px;
+  font-size:14px;font-weight:800;
+  box-shadow:0 12px 36px var(--primary-glow);
+  z-index:7000;transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  display:flex;align-items:center;gap:8px;cursor:pointer;
+  white-space:nowrap;
+}
+.new-order-notif.show{transform:translateX(-50%) translateY(0)}
+
+/* ===== MOBILE RESPONSIVE ===== */
+@media(max-width:400px){
+  .card-amounts{gap:8px}
+  .amount-num{font-size:14px}
+  .status-actions{flex-direction:column}
+  .action-btn{min-width:auto}
+}
+
+/* ===== CLIENT CALL BTN ===== */
+.call-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(6,214,160,0.08);border:1px solid rgba(6,214,160,0.2);
+  color:var(--success);padding:5px 12px;border-radius:20px;
+  font-size:12px;font-weight:700;text-decoration:none;
+  transition:all 0.2s;margin-top:4px;
+}
+.call-btn:hover{background:rgba(6,214,160,0.16)}
+
+/* ===== LOCATION BTN ===== */
+.location-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(76,201,240,0.08);border:1px solid rgba(76,201,240,0.2);
+  color:var(--info);padding:5px 12px;border-radius:20px;
+  font-size:12px;font-weight:700;text-decoration:none;
+  transition:all 0.2s;margin-top:4px;margin-right:6px;
+}
+.location-btn:hover{background:rgba(76,201,240,0.16)}
+
+/* ===== COMPACT MOBILE LAYOUT — تصغير الواجهة عشان تناسب شاشة الموبايل ===== */
+body{font-size:13px}
+.topbar{height:46px;padding:0 12px}
+.tb-brand{gap:8px}
+.tb-brand-icon{width:30px;height:30px;font-size:15px;border-radius:9px}
+.tb-brand-name{font-size:15px}
+.tb-brand-sub{display:none}
+.tb-right{gap:6px}
+.driver-badge{padding:3px 9px;gap:5px}
+.driver-avatar{width:22px;height:22px;font-size:11px}
+.driver-name{font-size:11px;max-width:70px}
+.online-pill{padding:3px 8px;font-size:10px;gap:5px}
+.online-dot{width:6px;height:6px}
+.logout-btn{width:28px;height:28px;font-size:12px;border-radius:8px}
+
+.tab-btn{padding:6px 6px;font-size:11px;gap:1px}
+.tab-icon{font-size:15px}
+.tab-badge{top:4px;font-size:9px;padding:0 5px;min-width:16px}
+.tab-panel{padding:10px;padding-bottom:24px}
+
+.orders-header{margin-bottom:8px}
+.orders-title{font-size:14px}
+.orders-count{padding:3px 10px;font-size:11px}
+.filter-strip{margin-bottom:8px}
+.filter-chip{padding:4px 11px;font-size:11px}
+
+.order-card{padding:9px 11px;margin-bottom:8px;border-radius:12px}
+.card-top{margin-bottom:6px;gap:8px}
+.card-code{font-size:14px}
+.card-time{font-size:10px;margin-top:1px}
+.status-badge{padding:2px 8px;font-size:10px}
+
+.card-client{gap:0;margin-bottom:6px}
+.client-avatar{display:none}
+.client-info{display:flex;flex-wrap:wrap;align-items:center;gap:3px 8px}
+.client-name{font-size:13px}
+.client-phone{font-size:11px}
+.call-btn,.location-btn{padding:3px 9px;font-size:11px;margin-top:0;gap:4px}
+
+.card-address{padding:6px 9px;margin-bottom:6px;font-size:12px;gap:6px;border-radius:8px}
+.addr-icon{font-size:13px;margin-top:0}
+.addr-zone{margin-bottom:0}
+.addr-detail{font-size:11px;line-height:1.4}
+.card-items{font-size:11px;margin-bottom:5px;line-height:1.45;padding-right:8px}
+
+.card-amounts{gap:10px}
+.amount-num{font-size:13px}
+.amount-lbl{font-size:9px}
+.payment-tag{padding:2px 8px;font-size:10px}
+
+.status-actions{margin-top:7px;padding-top:7px;gap:6px;flex-direction:row}
+.action-btn{min-width:0;padding:7px 10px;font-size:12px;border-radius:9px}
+.btn-note{flex:0 0 auto}
+
+/* الطلبات المنتهية (تم التسليم / ملغي) — نسخة مصغّرة من غير تفاصيل العنوان */
+.order-card.status-delivered,.order-card.status-cancelled{padding:7px 11px;opacity:0.55}
+.order-card.status-delivered .card-address,
+.order-card.status-cancelled .card-address,
+.order-card.status-delivered .card-items,
+.order-card.status-cancelled .card-items,
+.order-card.status-delivered .card-client .call-btn,
+.order-card.status-cancelled .card-client .call-btn{display:none}
+
+/* ===== BREAK REQUEST — طلب استراحة ===== */
+.break-btn{background:rgba(255,190,11,0.12);border:1px solid rgba(255,190,11,0.3);color:var(--accent);padding:3px 10px;border-radius:20px;font-family:'Cairo',sans-serif;font-size:11px;font-weight:800;cursor:pointer}
+.break-btn.hidden{display:none}
+.break-strip{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 12px;font-size:12px;font-weight:700;border-bottom:1px solid var(--border)}
+.break-strip.hidden{display:none}
+.break-strip button{flex-shrink:0;padding:4px 12px;border-radius:14px;border:1px solid currentColor;background:transparent;color:inherit;font-family:'Cairo',sans-serif;font-size:11px;font-weight:800;cursor:pointer}
+.break-strip.pending{background:rgba(255,190,11,0.12);color:var(--accent)}
+.break-strip.active{background:rgba(76,201,240,0.12);color:var(--info)}
+.break-strip.ended{background:rgba(239,71,111,0.14);color:var(--danger);animation:livePing 1.5s ease infinite}
+.break-strip.rejected{background:rgba(239,71,111,0.1);color:var(--danger)}
+.break-strip.gps-ok{background:rgba(6,214,160,0.12);color:var(--success)}
+.break-strip.gps-wait{background:rgba(255,190,11,0.12);color:var(--accent)}
+.break-strip.gps-off{background:rgba(239,71,111,0.14);color:var(--danger)}
+.break-options{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:6px}
+.break-opt{padding:14px 6px;border-radius:14px;border:1px solid var(--border2);background:var(--surface);color:var(--text);font-family:'Cairo',sans-serif;font-size:14px;font-weight:800;cursor:pointer;line-height:1.3}
+.break-opt small{display:block;font-size:10px;font-weight:600;color:var(--text-muted)}
+.break-opt:active{background:rgba(255,190,11,0.15);border-color:var(--accent)}
+
+/* ===== SHIFT — الشيفت ===== */
+.shift-overlay{position:fixed;inset:0;z-index:7500;background:var(--dark);display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
+.shift-overlay.hidden{display:none}
+.shift-card{width:min(420px,100%);text-align:center}
+.shift-emoji{font-size:44px;margin-bottom:6px}
+.shift-title{font-size:20px;font-weight:900;margin-bottom:8px}
+.shift-sub{font-size:12px;color:var(--text-muted);line-height:1.8;margin-bottom:16px}
+.shift-options{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+.shift-opt{padding:16px 8px;border-radius:16px;border:1px solid var(--border2);background:var(--surface);color:var(--text);font-family:'Cairo',sans-serif;font-size:24px;font-weight:900;cursor:pointer;line-height:1.2}
+.shift-opt small{display:block;font-size:11px;font-weight:600;color:var(--text-muted)}
+.shift-opt.selected{border-color:var(--primary);background:rgba(255,107,53,0.14);color:var(--primary)}
+.shift-start-btn{width:100%;padding:13px;border:none;border-radius:14px;background:linear-gradient(135deg,var(--primary),var(--primary-d));color:#fff;font-family:'Cairo',sans-serif;font-size:15px;font-weight:900;cursor:pointer}
+.shift-start-btn:disabled{opacity:.4;cursor:not-allowed}
+.shift-link{display:block;margin:12px auto 0;background:none;border:none;color:var(--text-muted);font-family:'Cairo',sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-decoration:underline}
+.shift-link.hidden{display:none}
+.shift-loading{color:var(--text-muted);font-size:13px;padding:20px 0}
+.logout-btn.locked,.logout-big-btn.locked{opacity:.55}
+#app:not(.shift-active) .break-btn{display:none}
+.break-strip.multi{gap:6px}
+.break-strip .strip-btns{display:flex;gap:6px;flex-shrink:0}
+.exit-reason{width:100%;min-height:80px;background:var(--surface);border:1px solid var(--border2);border-radius:12px;color:var(--text);font-family:'Cairo',sans-serif;font-size:13px;padding:10px;resize:none;margin-bottom:4px}
+.exit-note{font-size:12px;color:var(--text-muted);line-height:1.7;margin-bottom:10px;text-align:center}
+
+/* ===== CHAT ===== */
+.chat-btn{position:relative;display:inline-flex;align-items:center;gap:6px;background:rgba(76,201,240,0.08);border:1px solid rgba(76,201,240,0.25);color:var(--info);padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;margin-top:4px}
+.chat-badge-dot{position:absolute;top:-4px;left:-4px;min-width:15px;height:15px;padding:0 3px;border-radius:8px;background:var(--danger);color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.chat-badge-dot.hidden{display:none}
+#chat-modal .modal-sheet{max-height:78vh;display:flex;flex-direction:column;padding:10px 16px 16px}
+.chat-header{display:flex;align-items:center;justify-content:space-between;padding:0 4px 10px;border-bottom:1px solid var(--border)}
+.chat-header-title{font-size:15px;font-weight:800}
+.chat-close-btn{background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;padding:4px}
+.chat-messages{flex:1;overflow-y:auto;padding:14px 4px;display:flex;flex-direction:column;gap:8px;min-height:200px}
+.chat-empty{text-align:center;color:var(--text-muted);font-size:13px;margin:auto}
+.chat-bubble{max-width:78%;padding:9px 13px;border-radius:16px;font-size:13.5px;line-height:1.5;word-break:break-word}
+.chat-bubble.me{align-self:flex-start;background:var(--primary);color:#fff;border-bottom-left-radius:4px}
+.chat-bubble.them{align-self:flex-end;background:var(--surface2);color:var(--text);border-bottom-right-radius:4px}
+.chat-bubble-time{font-size:10px;opacity:.7;margin-top:3px;display:block}
+.chat-input-row{display:flex;gap:8px;padding-top:10px;border-top:1px solid var(--border)}
+.chat-input{flex:1;padding:11px 14px;background:var(--surface);border:1.5px solid var(--border2);border-radius:20px;font-family:'Cairo',sans-serif;font-size:13px;color:var(--text);outline:none}
+.chat-send-btn{width:42px;height:42px;border-radius:50%;border:none;background:var(--primary);color:#fff;font-size:16px;cursor:pointer;flex-shrink:0}
+.chat-send-btn:disabled{opacity:.5;cursor:not-allowed}
+</style>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+</script>
+</head>
+<body>
+
+<!-- ===== LOGIN SCREEN ===== -->
+<div id="login-screen">
+  <div class="login-bg"></div>
+  <div class="login-card">
+    <div class="login-logo">🛵</div>
+    <div class="login-title">أهلاً بيك في <span>هات</span></div>
+    <div class="login-sub">ادخل بيانات الطيار عشان تكمل</div>
+
+    <div class="inp-group">
+      <div class="inp-label">👤 اسم المستخدم</div>
+      <div class="inp-wrap">
+        <span class="inp-icon">👤</span>
+        <input type="text" id="login-username" class="login-inp" placeholder="ادخل اسم المستخدم..." autocomplete="username" autocorrect="off" autocapitalize="none"/>
+      </div>
+    </div>
+
+    <div class="inp-group">
+      <div class="inp-label">🔒 كلمة السر</div>
+      <div class="inp-wrap">
+        <span class="inp-icon">🔒</span>
+        <input type="password" id="login-password" class="login-inp" placeholder="ادخل كلمة السر..."/>
+        <span class="pass-toggle" id="pass-toggle" title="إظهار/إخفاء">👁</span>
+      </div>
+    </div>
+
+    <div class="login-error" id="login-error">❌ اسم المستخدم أو كلمة السر غلط</div>
+
+    <button class="login-btn" id="login-btn" onclick="doLogin()">
+      <span id="login-btn-text">دخول 🚀</span>
+    </button>
+  </div>
+</div>
+
+<!-- ===== APP ===== -->
+<div id="app" class="hidden">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="tb-brand">
+      <div class="tb-brand-icon">🛵</div>
+      <div>
+        <div class="tb-brand-name">هات</div>
+        <div class="tb-brand-sub">الطيار</div>
+      </div>
+    </div>
+    <div class="tb-right">
+      <div class="online-pill">
+        <div class="online-dot"></div>
+        <span id="online-pill-text">مباشر</span>
+      </div>
+      <div class="driver-badge">
+        <div class="driver-avatar">🛵</div>
+        <div class="driver-name" id="topbar-driver-name">—</div>
+      </div>
+      <button class="logout-btn" id="theme-toggle-btn" onclick="toggleTheme()" title="الوضع الليلي/النهاري">🌙</button>
+      <button class="logout-btn" onclick="doLogout()" title="تسجيل خروج">🚪</button>
+    </div>
+  </div>
+
+  <!-- TABS BAR -->
+  <div class="tabs-bar">
+    <button class="tab-btn active" onclick="switchTab('orders')" id="tab-orders">
+      <span class="tab-icon">📋</span>
+      <span>الطلبات</span>
+      <span class="tab-badge" id="pending-badge"></span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('earnings')" id="tab-earnings">
+      <span class="tab-icon">💰</span>
+      <span>أرباحي</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('profile')" id="tab-profile">
+      <span class="tab-icon">👤</span>
+      <span>حسابي</span>
+    </button>
+  </div>
+
+  <div class="break-strip hidden" id="shift-strip"></div>
+  <div class="break-strip hidden" id="break-strip"></div>
+  <div class="break-strip hidden" id="gps-strip"></div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+
+    <!-- ORDERS PANEL -->
+    <div class="tab-panel active" id="panel-orders">
+      <div class="orders-header">
+        <div class="orders-title">📋 الطلبات</div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <button class="break-btn" id="break-btn" onclick="openBreakModal()">☕ استراحة</button>
+          <div class="orders-count" id="orders-count-text">0 طلب</div>
+        </div>
+      </div>
+      <div class="filter-strip">
+        <button class="filter-chip active" data-filter="all" onclick="setFilter(this,'all')">الكل</button>
+        <button class="filter-chip" data-filter="pending" onclick="setFilter(this,'pending')">⏳ جديد</button>
+        <button class="filter-chip" data-filter="preparing" onclick="setFilter(this,'preparing')">🔄 جاري</button>
+        <button class="filter-chip" data-filter="ready" onclick="setFilter(this,'ready')">✅ جاهز</button>
+        <button class="filter-chip" data-filter="delivered" onclick="setFilter(this,'delivered')">📦 اتسلم</button>
+        <button class="filter-chip" data-filter="cancelled" onclick="setFilter(this,'cancelled')">❌ ملغي</button>
+      </div>
+      <div id="orders-list"></div>
+    </div>
+
+    <!-- EARNINGS PANEL -->
+    <div class="tab-panel" id="panel-earnings">
+      <div class="earnings-summary">
+        <div class="earn-card">
+          <div class="earn-icon">💰</div>
+          <div class="earn-num" id="earn-today">0</div>
+          <div class="earn-lbl">جنيه النهارده</div>
+        </div>
+        <div class="earn-card">
+          <div class="earn-icon">📦</div>
+          <div class="earn-num" id="earn-orders-today">0</div>
+          <div class="earn-lbl">طلب النهارده</div>
+        </div>
+        <div class="earn-card full">
+          <div class="earn-icon">🏆</div>
+          <div class="earn-num" id="earn-total">0</div>
+          <div class="earn-lbl">إجمالي الأرباح (كل الوقت)</div>
+        </div>
+      </div>
+      <div class="earn-section-title">📋 الطلبات المكتملة</div>
+      <div id="earn-list"></div>
+    </div>
+
+    <!-- PROFILE PANEL -->
+    <div class="tab-panel" id="panel-profile">
+      <div class="profile-card">
+        <div class="profile-avatar">🛵</div>
+        <div class="profile-name" id="profile-name-text">—</div>
+        <div class="profile-role">طيار توصيل</div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-num" id="stat-delivered">0</div>
+          <div class="stat-lbl">اتسلم</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="stat-cancelled">0</div>
+          <div class="stat-lbl">ملغي</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="stat-total-earn">0</div>
+          <div class="stat-lbl">جنيه</div>
+        </div>
+      </div>
+
+      <div class="profile-section">
+        <div class="profile-section-title">معلومات الحساب</div>
+        <div class="profile-row">
+          <span class="profile-row-label">👤 اسم المستخدم</span>
+          <span class="profile-row-val" id="profile-username-text">—</span>
+        </div>
+        <div class="profile-row">
+          <span class="profile-row-label">🛵 الدور</span>
+          <span class="profile-row-val">طيار توصيل</span>
+        </div>
+        <div class="profile-row">
+          <span class="profile-row-label">📡 الحالة</span>
+          <span class="profile-row-val" style="color:var(--success)">● مباشر</span>
+        </div>
+      </div>
+
+      <button class="logout-big-btn" onclick="doLogout()">🚪 تسجيل خروج</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===== NOTE MODAL ===== -->
+<div class="modal-backdrop" id="note-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">✏️ أضف ملاحظة للعميل</div>
+    <textarea class="modal-textarea" id="note-textarea" placeholder="اكتب ملاحظتك هنا... (مثال: الأسانسير شغال، انتظرني تحت)" rows="4"></textarea>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeNoteModal()">إلغاء</button>
+      <button class="modal-confirm" onclick="sendNote()">📤 ابعت الملاحظة</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SHIFT OVERLAY ===== -->
+<div class="shift-overlay hidden" id="shift-overlay">
+  <div class="shift-card">
+    <div class="shift-emoji">🕐</div>
+    <div class="shift-title">ابدأ شيفتك</div>
+    <div class="shift-loading" id="shift-loading">جاري التحميل...</div>
+    <div id="shift-picker" class="hidden">
+      <div class="shift-sub">اختار مدة الشيفت عشان تبدأ تستقبل الطلبات.<br>بعد ما تبدأ مش هتقدر تسجّل خروج قبل ما ينتهي — ولو عندك مشكلة هتقدر تطلب من المدير إنهاء الشيفت.</div>
+      <div class="shift-options">
+        <button class="shift-opt" data-hours="6" onclick="selectShiftOption(6)">6<small>ساعات</small></button>
+        <button class="shift-opt" data-hours="8" onclick="selectShiftOption(8)">8<small>ساعات</small></button>
+        <button class="shift-opt" data-hours="10" onclick="selectShiftOption(10)">10<small>ساعات</small></button>
+        <button class="shift-opt" data-hours="12" onclick="selectShiftOption(12)">12<small>ساعة</small></button>
+      </div>
+      <button class="shift-start-btn" id="shift-start-btn" disabled onclick="confirmStartShift()">▶️ ابدأ الشيفت</button>
+    </div>
+    <button class="shift-link hidden" id="shift-cancel-btn" onclick="closeShiftPicker()">رجوع</button>
+    <button class="shift-link" onclick="doLogout()">🚪 تسجيل خروج</button>
+  </div>
+</div>
+
+<!-- ===== EXIT REQUEST MODAL ===== -->
+<div class="modal-backdrop" id="exit-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🔒 الشيفت لسه شغال</div>
+    <div class="exit-note" id="exit-note">مينفعش تسجّل خروج قبل انتهاء الشيفت. لو عندك مشكلة اكتب السبب وهنبعت طلب للمدير.</div>
+    <textarea class="exit-reason" id="exit-reason" maxlength="200" placeholder="اكتب المشكلة اللي بتواجهك..."></textarea>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeExitModal()">إلغاء</button>
+      <button class="modal-confirm" onclick="sendExitRequest()">📤 ابعت للمدير</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== GPS REQUIRED MODAL ===== -->
+<div class="modal-backdrop" id="gps-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">📍 لازم تفعّل الموقع (GPS)</div>
+    <div class="exit-note" id="gps-modal-msg"></div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeGpsModal()">إغلاق</button>
+      <button class="modal-confirm" onclick="gpsModalRetry()">🔄 جرّب تاني</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CHAT MODAL ===== -->
+<div class="modal-backdrop" id="chat-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="chat-header">
+      <div class="chat-header-title">💬 الشات مع العميل</div>
+      <button type="button" class="chat-close-btn" onclick="closeChat()">✕</button>
+    </div>
+    <div class="chat-messages" id="chat-messages"><div class="chat-empty">لسه مفيش رسايل — ابدأ المحادثة</div></div>
+    <div class="chat-input-row">
+      <input type="text" class="chat-input" id="chat-input" maxlength="500" placeholder="اكتب رسالتك..." autocomplete="off"/>
+      <button type="button" class="chat-send-btn" id="chat-send-btn" onclick="sendChatMessage()">➤</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BREAK MODAL ===== -->
+<div class="modal-backdrop" id="break-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">☕ اطلب استراحة من المدير</div>
+    <div class="break-options">
+      <button class="break-opt" onclick="requestBreak(10)">10<small>دقايق</small></button>
+      <button class="break-opt" onclick="requestBreak(15)">15<small>دقيقة</small></button>
+      <button class="break-opt" onclick="requestBreak(30)">30<small>دقيقة</small></button>
+      <button class="break-opt" onclick="requestBreak(45)">45<small>دقيقة</small></button>
+      <button class="break-opt" onclick="requestBreak(60)">60<small>دقيقة</small></button>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeBreakModal()">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast"></div>
+
+<!-- ===== NEW ORDER NOTIF ===== -->
+<div class="new-order-notif" id="new-order-notif" onclick="switchTab('orders');document.getElementById('new-order-notif').classList.remove('show')">
+  🔔 طلب جديد وصل!
+</div>
+
+<script>
+// حماية: لو localStorage مش شغال (تصفح خاص / تخزين ممتلي / محظور) نستخدم تخزين مؤقت في الذاكرة
+// بدل ما أي getItem/setItem يرمي error ويوقّف الصفحة.
+(function(){
+  try { var k='__ls_test__'; window.localStorage.setItem(k,'1'); window.localStorage.removeItem(k); return; } catch(e) {}
+  var mem = {};
+  var fake = {
+    getItem: function(k){ return Object.prototype.hasOwnProperty.call(mem,k) ? mem[k] : null; },
+    setItem: function(k,v){ mem[k] = String(v); },
+    removeItem: function(k){ delete mem[k]; },
+    clear: function(){ mem = {}; },
+    key: function(i){ return Object.keys(mem)[i] || null; },
+    get length(){ return Object.keys(mem).length; }
+  };
+  try { Object.defineProperty(window,'localStorage',{value:fake,configurable:true}); } catch(e) {}
+})();
+</script>
+<script>
+// شريط تنبيه عام: مفيش نت / أي listener فشل — بديل بسيط عن الفشل الصامت
+(function(){
+  var bar;
+  function ensureBar(){
+    if (bar) return bar;
+    bar = document.createElement('div');
+    bar.id = 'conn-banner';
+    bar.style.cssText = 'display:none;position:fixed;top:0;left:0;right:0;z-index:99999;background:#EF476F;color:#fff;text-align:center;font:700 13px "Cairo",sans-serif;padding:9px 14px;box-shadow:0 2px 10px rgba(0,0,0,.25)';
+    (document.body || document.documentElement).appendChild(bar);
+    return bar;
+  }
+  window.showConnBanner = function(msg, persistent){
+    var b = ensureBar();
+    b.textContent = msg;
+    b.style.display = 'block';
+    clearTimeout(b._t);
+    if (!persistent) b._t = setTimeout(function(){ if (navigator.onLine) b.style.display = 'none'; }, 6000);
+  };
+  window.hideConnBanner = function(){ if (bar) bar.style.display = 'none'; };
+  function boot(){
+    ensureBar();
+    if (!navigator.onLine) window.showConnBanner('📡 مفيش اتصال بالإنترنت دلوقتي', true);
+  }
+  if (document.body) boot(); else document.addEventListener('DOMContentLoaded', boot);
+  window.addEventListener('offline', function(){ window.showConnBanner('📡 مفيش اتصال بالإنترنت دلوقتي', true); });
+  window.addEventListener('online', function(){ window.hideConnBanner(); });
+})();
+</script>
+
+<script>
+(function() {
+  var THEME_KEY = 'hat_theme_driver';
+  var saved = localStorage.getItem(THEME_KEY);
+  if (saved === 'light') document.documentElement.setAttribute('data-theme', 'light');
+  window.toggleTheme = function() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem(THEME_KEY, 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      localStorage.setItem(THEME_KEY, 'light');
+    }
+    var btn = document.getElementById('theme-toggle-btn');
+    if (btn) btn.textContent = isLight ? '🌙' : '☀️';
+  };
+  document.addEventListener('DOMContentLoaded', function() {
+    var btn = document.getElementById('theme-toggle-btn');
+    if (btn) btn.textContent = document.documentElement.getAttribute('data-theme') === 'light' ? '☀️' : '🌙';
+  });
+})();
+</script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getFirestore, collection, doc, addDoc, onSnapshot, updateDoc, arrayUnion, query, orderBy, getDocs, where, runTransaction, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut }
+  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA3IUiu7NoCjCXNzOocs7ANyrOEaUXKpI4",
+  authDomain: "hat-delivery-58a16.firebaseapp.com",
+  projectId: "hat-delivery-58a16",
+  storageBucket: "hat-delivery-58a16.firebasestorage.app",
+  messagingSenderId: "399071589216",
+  appId: "1:399071589216:web:46d1a22752194956336405"
+};
+
+// اسم مستقل للطيار: جلسة الدخول بتتخزن لكل app لوحدها، فمبتتخلطش مع جلسة العميل/المدير على نفس الدومين
+const app  = initializeApp(firebaseConfig, 'driver-app');
+const db   = getFirestore(app);
+const auth = getAuth(app);
+
+// الطيار بيدخل باسم مستخدم، لكن Firebase Auth محتاج إيميل — فبنحوّله لإيميل وهمي ثابت
+const PILOT_EMAIL_DOMAIN = 'pilots.hat.local';
+function usernameToEmail(u) { return String(u).trim().toLowerCase() + '@' + PILOT_EMAIL_DOMAIN; }
+
+// ========== DRIVER ACCOUNTS — من Firestore ==========
+// الطيارين بيتجيبوا من collection "pilots" في Firestore
+
+// ========== STATE ==========
+let currentDriver   = null;
+let allOrders       = [];
+let currentFilter   = 'all';
+let unsubOrders     = null;
+let unsubOrders2    = null;
+let unsubService    = null;
+let activeNoteOrder = null;
+let prevOrderIds    = null;
+
+// ========== UTILS ==========
+function nowStr() {
+  const d = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  const h = pad(d.getHours()), m = pad(d.getMinutes());
+  const day = pad(d.getDate()), mon = pad(d.getMonth()+1), yr = d.getFullYear();
+  return `${yr}/${mon}/${day} — ${h}:${m}`;
+}
+
+function esc(str) {
+  if (str === null || str === undefined) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// رقم آمن (بيتفادى النصوص والـ NaN)
+function num(v) {
+  const n = parseFloat(v);
+  return isFinite(n) ? n : 0;
+}
+
+// أرقام تليفون صالحة للـ tel: بس
+function telDigits(v) {
+  return String(v === null || v === undefined ? '' : v).replace(/[^\d+]/g, '');
+}
+
+// لينك خريطة آمن — http/https بس (بيمنع javascript: وغيره)
+function safeUrl(u) {
+  try {
+    const x = new URL(String(u));
+    return (x.protocol === 'https:' || x.protocol === 'http:') ? x.href : '';
+  } catch(e) { return ''; }
+}
+
+// وقت من Timestamp أو {seconds} أو رقم
+function tsMs(v) {
+  if (!v) return null;
+  if (typeof v.toMillis === 'function') return v.toMillis();
+  if (typeof v.seconds === 'number') return v.seconds * 1000;
+  const n = Number(v);
+  return isFinite(n) && n > 0 ? n : null;
+}
+
+function tsNow() {
+  return { seconds: Math.floor(Date.now() / 1000), nanoseconds: 0 };
+}
+
+// الـ id لازم يكون آمن قبل ما يدخل في onclick
+const SAFE_ID = /^[A-Za-z0-9_-]{1,64}$/;
+
+// الطلب معيّن للطيار الحالي؟ (بالـ id، أو بالاسم للطلبات القديمة اللي ملهاش id)
+function isMine(o) {
+  if (!currentDriver || !o) return false;
+  if (o.assignedPilotId) return o.assignedPilotId === currentDriver.id;
+  return !!o.assignedPilot && o.assignedPilot === currentDriver.name;
+}
+
+// إجمالي الطلب اللي العميل بيدفعه (منتجات + توصيل + خدمة)
+function orderTotal(o) {
+  const t = parseFloat(o.totalPrice);
+  if (isFinite(t) && t > 0) return t;
+  const real = parseFloat(o.realItemsPrice);
+  const items = isFinite(real) ? real : num(o.itemsPrice);
+  const fee = (o.serviceFee === undefined || o.serviceFee === null) ? 10 : num(o.serviceFee);
+  return items + num(o.deliveryPrice) + fee;
+}
+
+// صوت التنبيه — AudioContext واحد بيتعاد استخدامه (المتصفح بيحدد عدد الـ contexts)
+let audioCtx = null;
+function getAudioCtx() {
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    if (!audioCtx) audioCtx = new AC();
+    if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+    return audioCtx;
+  } catch(e) { return null; }
+}
+['click', 'touchstart'].forEach(ev => document.addEventListener(ev, () => getAudioCtx(), { once: true, passive: true }));
+
+function playBeep() {
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  try {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.frequency.setValueAtTime(880, ctx.currentTime);
+    osc.frequency.setValueAtTime(660, ctx.currentTime + 0.15);
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    osc.start(); osc.stop(ctx.currentTime + 0.5);
+  } catch(e) {}
+}
+
+function showToast(msg, type='', duration=2800) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), duration);
+}
+
+const STATUS_META = {
+  pending:    { label:'⏳ جديد',          cls:'badge-pending'   },
+  preparing:  { label:'🔄 جاري',          cls:'badge-preparing' },
+  ready:      { label:'✅ جاهز للتسليم',  cls:'badge-ready'     },
+  delivered:  { label:'📦 اتسلم',         cls:'badge-delivered' },
+  cancelled:  { label:'❌ ملغي',           cls:'badge-cancelled' },
+};
+
+function getPayClass(payment) {
+  if (!payment || typeof payment !== 'string') return 'pay-cash';
+  const p = payment.toLowerCase();
+  if (p.includes('كاش') || p.includes('cash'))      return 'pay-cash';
+  if (p.includes('فودافون') || p.includes('voda'))   return 'pay-vodafone';
+  if (p.includes('instapay') || p.includes('انستا')) return 'pay-instapay';
+  return 'pay-other';
+}
+
+// ========== LOGIN ==========
+window.doLogin = async function() {
+  const username = (document.getElementById('login-username').value || '').trim().toLowerCase();
+  const password = (document.getElementById('login-password').value || '').trim();
+  const btn  = document.getElementById('login-btn');
+  const err  = document.getElementById('login-error');
+  const text = document.getElementById('login-btn-text');
+
+  err.classList.remove('show');
+  document.getElementById('login-error').textContent = '❌ اسم المستخدم أو كلمة السر غلط';
+  document.querySelectorAll('.login-inp').forEach(i => i.classList.remove('error'));
+
+  if (!username || !password) {
+    document.getElementById('login-error').textContent = '❌ من فضلك ادخل اسم المستخدم وكلمة السر';
+    err.classList.add('show');
+    if (!username) document.getElementById('login-username').classList.add('error');
+    if (!password) document.getElementById('login-password').classList.add('error');
+    return;
+  }
+
+  btn.disabled = true;
+  text.innerHTML = '<span class="spinner"></span> جاري التحقق...';
+
+  try {
+    let cred;
+    try {
+      cred = await signInWithEmailAndPassword(auth, usernameToEmail(username), password);
+    } catch(authErr) {
+      // اسم مستخدم أو كلمة سر غلط (Firebase بيرجع نفس الخطأ للاتنين عشان الأمان)
+      err.classList.add('show');
+      document.getElementById('login-username').classList.add('error');
+      document.getElementById('login-password').classList.add('error');
+      btn.disabled = false; text.textContent = 'دخول 🚀';
+      return;
+    }
+
+    // الحساب مسجّل في Firebase Auth، دلوقتي نلاقي بيانات الطيار المرتبطة بيه
+    const snap = await getDocs(query(collection(db, 'pilots'), where('authUid', '==', cred.user.uid)));
+    if (snap.empty) {
+      await signOut(auth);
+      err.textContent = '❌ الحساب ده لسه مش متفعّل — كلّم المدير';
+      err.classList.add('show');
+      btn.disabled = false; text.textContent = 'دخول 🚀';
+      return;
+    }
+
+    const pilotDoc = snap.docs[0];
+    const pilot = pilotDoc.data();
+    currentDriver = { id: pilotDoc.id, username, name: pilot.name, phone: pilot.phone || '' };
+    localStorage.setItem('hat_driver', JSON.stringify(currentDriver));
+
+    // تحديث الحالة لـ online
+    try { await updateDoc(doc(db, 'pilots', pilotDoc.id), { status: 'online', lastSeen: serverTimestamp() }); } catch(e) {}
+
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    initDriver();
+  } catch(e) {
+    showToast('❌ خطأ في الاتصال: ' + e.message, 'error');
+    btn.disabled = false; text.textContent = 'دخول 🚀';
+  }
+};
+
+// ========== HEARTBEAT (الطيار متصل) ==========
+// كل دقيقة بنكتب lastSeen على حساب الطيار — الإدارة بتعتبره متصل لو آخر ظهور من أقل من دقيقتين ونص
+const HEARTBEAT_MS = 60000;
+let heartbeatTimer = null;
+
+async function sendHeartbeat() {
+  if (!currentDriver || !currentDriver.id) return;
+  try {
+    await updateDoc(doc(db, 'pilots', currentDriver.id), { lastSeen: serverTimestamp() });
+  } catch(e) { /* مفيش نت — هنحاول تاني في الدقيقة الجاية */ }
+}
+
+function startHeartbeat() {
+  stopHeartbeat();
+  sendHeartbeat();
+  heartbeatTimer = setInterval(sendHeartbeat, HEARTBEAT_MS);
+}
+
+function stopHeartbeat() {
+  if (heartbeatTimer) { clearInterval(heartbeatTimer); heartbeatTimer = null; }
+}
+
+// أول ما الطيار يرجع للتطبيق أو النت يرجع — نبعت فوراً
+document.addEventListener('visibilitychange', () => { if (!document.hidden) sendHeartbeat(); });
+window.addEventListener('online', sendHeartbeat);
+
+// ========== BREAK (طلب استراحة) ==========
+// الطيار بيطلب، المدير بيوافق أو يرفض. كله متخزن في pilots/{id}.breakRequest
+const BREAK_OPTIONS = [10, 15, 30, 45, 60];
+let unsubPilot = null;
+let currentBreak = null;
+let breakTicker = null;
+let lastBreakStatus = null;
+let breakEndAlerted = false;
+
+function breakState(b) {
+  if (!b || typeof b !== 'object') return null;
+  if (b.status === 'pending')  return 'pending';
+  if (b.status === 'rejected') return 'rejected';
+  if (b.status === 'approved') return (Number(b.endsAt) || 0) > Date.now() ? 'active' : 'ended';
+  return null;
+}
+function curBreakState() { return breakState(currentBreak); }
+
+function fmtRemaining(ms) {
+  const total = Math.max(0, Math.ceil(ms / 1000));
+  const m = Math.floor(total / 60), s = total % 60;
+  return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+}
+
+function stopBreakTicker() {
+  if (breakTicker) { clearInterval(breakTicker); breakTicker = null; }
+}
+
+function tickBreak() {
+  const st = curBreakState();
+  if (st !== 'active') {
+    stopBreakTicker();
+    renderBreakStrip();
+    if (st === 'ended' && !breakEndAlerted) {
+      breakEndAlerted = true;
+      showToast('⏰ انتهت الاستراحة — ارجع للشغل', 'error', 5000);
+      playBeep();
+    }
+    return;
+  }
+  const el = document.getElementById('break-remaining');
+  if (el) el.textContent = fmtRemaining(Number(currentBreak.endsAt) - Date.now());
+}
+
+function renderBreakStrip() {
+  const strip = document.getElementById('break-strip');
+  const btn = document.getElementById('break-btn');
+  if (!strip || !btn) return;
+  const st = curBreakState();
+  if (!st) {
+    strip.className = 'break-strip hidden';
+    strip.innerHTML = '';
+    btn.classList.remove('hidden');
+    stopBreakTicker();
+    return;
+  }
+  btn.classList.add('hidden');
+  strip.className = 'break-strip ' + st;
+  const m = Number(currentBreak.minutes) || 0;
+  if (st === 'pending') {
+    strip.innerHTML = `<span>⏳ طلب استراحة ${m} دقيقة — في انتظار موافقة المدير</span><button onclick="cancelBreakRequest()">إلغاء الطلب</button>`;
+  } else if (st === 'active') {
+    strip.innerHTML = `<span>☕ في استراحة — باقي <b id="break-remaining">--:--</b></span><button onclick="endBreak()">رجوع للشغل</button>`;
+    if (!breakTicker) breakTicker = setInterval(tickBreak, 1000);
+    tickBreak();
+  } else if (st === 'ended') {
+    strip.innerHTML = `<span>⏰ انتهت استراحتك (${m} دقيقة)</span><button onclick="endBreak()">رجوع للشغل</button>`;
+    stopBreakTicker();
+  } else if (st === 'rejected') {
+    strip.innerHTML = `<span>❌ المدير رفض طلب الاستراحة</span><button onclick="endBreak()">تمام</button>`;
+    stopBreakTicker();
+  }
+}
+
+function startPilotListener() {
+  stopPilotListener();
+  if (!currentDriver) return;
+  applyShiftState();   // 'loading' — شاشة الشيفت لحد ما تيجي بيانات الحساب
+  unsubPilot = onSnapshot(doc(db, 'pilots', currentDriver.id), snap => {
+    if (!snap.exists() || !currentDriver) return;
+    // ----- الشيفت -----
+    const sh = snap.data().shift || null;
+    const er = sh && sh.exitRequest && sh.exitRequest.status ? sh.exitRequest.status : null;
+    if (lastExitStatus === 'pending' && er === 'approved') {
+      showToast('✅ المدير وافق على إنهاء الشيفت', 'success', 4000); playBeep();
+    } else if (lastExitStatus === 'pending' && er === 'rejected') {
+      showToast('❌ المدير رفض إنهاء الشيفت', 'error', 4000); playBeep();
+    }
+    lastExitStatus = er;
+    currentShift = sh;
+    shiftLoaded = true;
+    applyShiftState();
+    if (!shiftTicker) shiftTicker = setInterval(tickShift, 10000);
+    const b = snap.data().breakRequest || null;
+    const st = b && b.status ? b.status : null;
+    const prev = lastBreakStatus;
+    currentBreak = b;
+    if (prev !== st) {
+      if (prev === 'pending' && st === 'approved') {
+        breakEndAlerted = false;
+        showToast('✅ المدير وافق على الاستراحة — ' + (Number(b.minutes) || 0) + ' دقيقة', 'success', 4000);
+        playBeep();
+      } else if (prev === 'pending' && st === 'rejected') {
+        showToast('❌ المدير رفض طلب الاستراحة', 'error', 4000);
+        playBeep();
+      } else if (prev === 'approved' && st === null) {
+        showToast('☕ المدير أنهى الاستراحة — ارجع للشغل', '', 4000);
+      }
+      lastBreakStatus = st;
+    }
+    renderBreakStrip();
+    syncLocationSharing();
+  }, err => { console.error('[pilot]', err); showConnBanner('⚠️ فشل تحديث بيانات حسابك — البيانات ممكن تبقى قديمة'); });
+}
+
+function stopPilotListener() {
+  if (unsubPilot) { unsubPilot(); unsubPilot = null; }
+  stopBreakTicker();
+  currentBreak = null;
+  lastBreakStatus = null;
+  breakEndAlerted = false;
+  resetShiftState();
+}
+
+window.openBreakModal = function() {
+  if (curShiftState() !== 'active') { showToast('ابدأ الشيفت الأول', 'error'); return; }
+  if (curBreakState()) { showToast('عندك طلب استراحة شغال بالفعل', 'error'); return; }
+  document.getElementById('break-modal').classList.add('show');
+};
+window.closeBreakModal = function() {
+  document.getElementById('break-modal').classList.remove('show');
+};
+document.getElementById('break-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('break-modal')) closeBreakModal();
+});
+
+window.requestBreak = async function(minutes) {
+  minutes = Number(minutes);
+  closeBreakModal();
+  if (!BREAK_OPTIONS.includes(minutes) || !currentDriver) return;
+  try {
+    const ref = doc(db, 'pilots', currentDriver.id);
+    await runTransaction(db, async tx => {
+      const snap = await tx.get(ref);
+      if (!snap.exists()) throw new Error('الحساب مش موجود');
+      const st = breakState(snap.data().breakRequest);
+      if (st === 'pending' || st === 'active') throw new Error('عندك طلب استراحة شغال بالفعل');
+      tx.update(ref, { breakRequest: { minutes, status: 'pending', requestedAtMs: Date.now() } });
+    });
+    showToast('☕ طلب الاستراحة (' + minutes + ' دقيقة) اتبعت للمدير', 'success');
+  } catch(e) {
+    showToast('❌ ' + e.message, 'error');
+  }
+};
+
+window.cancelBreakRequest = async function() {
+  if (!currentDriver) return;
+  try {
+    const ref = doc(db, 'pilots', currentDriver.id);
+    await runTransaction(db, async tx => {
+      const snap = await tx.get(ref);
+      const b = snap.exists() ? snap.data().breakRequest : null;
+      if (!b || b.status !== 'pending') throw new Error('المدير رد على الطلب خلاص');
+      tx.update(ref, { breakRequest: null });
+    });
+    showToast('تم إلغاء طلب الاستراحة');
+  } catch(e) {
+    showToast('❌ ' + e.message, 'error');
+  }
+};
+
+// رجوع للشغل (بعد الاستراحة) أو إغلاق رسالة الرفض
+window.endBreak = async function() {
+  if (!currentDriver) return;
+  currentBreak = null;
+  lastBreakStatus = null;   // عشان مايظهرش إشعار "المدير أنهى الاستراحة"
+  renderBreakStrip();
+  try {
+    await updateDoc(doc(db, 'pilots', currentDriver.id), { breakRequest: null });
+  } catch(e) {
+    showToast('❌ ' + e.message, 'error');
+  }
+};
+
+// ========== SHIFT (الشيفت) ==========
+// الطيار لازم يختار مدة الشيفت قبل ما يستقبل طلبات، ومينفعش يسجّل خروج قبل ما ينتهي.
+// لو عنده مشكلة بيبعت طلب للمدير (pilots/{id}.shift.exitRequest).
+const SHIFT_OPTIONS = [6, 8, 10, 12];
+let currentShift = null;
+let shiftLoaded = false;
+let shiftSeenActive = false;
+let shiftPickerOpen = false;
+let selectedShiftHours = 0;
+let shiftTicker = null;
+let shiftStateCache = null;
+let lastExitStatus = null;
+
+function shiftIsActive(s) {
+  if (!s || typeof s !== 'object') return false;
+  if (!(Number(s.endsAt) > Date.now())) return false;
+  if (s.exitRequest && s.exitRequest.status === 'approved') return false;
+  return true;
+}
+
+// loading | none | active | ended
+function curShiftState() {
+  if (!shiftLoaded) return 'loading';
+  if (shiftIsActive(currentShift)) return 'active';
+  return shiftSeenActive ? 'ended' : 'none';
+}
+
+function fmtShiftLeft(ms) {
+  const total = Math.max(0, Math.floor(ms / 60000));
+  const h = Math.floor(total / 60), m = total % 60;
+  return h > 0 ? h + 'س ' + String(m).padStart(2, '0') + 'د' : m + 'د';
+}
+
+function updateShiftChip() {
+  const pill = document.getElementById('online-pill-text');
+  if (!pill) return;
+  pill.textContent = shiftIsActive(currentShift) ? '⏱ ' + fmtShiftLeft(Number(currentShift.endsAt) - Date.now()) : 'مباشر';
+}
+
+function renderShiftOverlay(st) {
+  const overlay = document.getElementById('shift-overlay');
+  if (!overlay) return;
+  const show = st === 'loading' || st === 'none' || shiftPickerOpen;
+  overlay.classList.toggle('hidden', !show);
+  document.getElementById('shift-loading').classList.toggle('hidden', st !== 'loading');
+  document.getElementById('shift-picker').classList.toggle('hidden', st === 'loading');
+  document.getElementById('shift-cancel-btn').classList.toggle('hidden', !(shiftPickerOpen && st === 'ended'));
+  document.querySelectorAll('.shift-opt').forEach(b => b.classList.toggle('selected', Number(b.dataset.hours) === selectedShiftHours));
+  document.getElementById('shift-start-btn').disabled = !SHIFT_OPTIONS.includes(selectedShiftHours);
+}
+
+function renderShiftStrip(st) {
+  const strip = document.getElementById('shift-strip');
+  if (!strip) return;
+  const er = currentShift && currentShift.exitRequest && typeof currentShift.exitRequest === 'object' ? currentShift.exitRequest : null;
+  if (st === 'active' && er && er.status === 'pending') {
+    strip.className = 'break-strip pending';
+    strip.innerHTML = `<span>⏳ طلب إنهاء الشيفت في انتظار المدير</span><button onclick="cancelExitRequest()">إلغاء الطلب</button>`;
+  } else if (st === 'active' && er && er.status === 'rejected') {
+    strip.className = 'break-strip rejected';
+    strip.innerHTML = `<span>❌ المدير رفض إنهاء الشيفت — كمّل شغل</span><button onclick="dismissExitRejected()">تمام</button>`;
+  } else if (st === 'ended') {
+    const released = er && er.status === 'approved';
+    strip.className = 'break-strip ' + (released ? 'active' : 'ended') + ' multi';
+    strip.innerHTML = `<span>${released ? '✅ المدير وافق على إنهاء شيفتك' : '⏰ انتهى شيفتك'}</span><div class="strip-btns"><button onclick="openShiftPicker()">شيفت جديد</button><button onclick="doLogout()">خروج</button></div>`;
+  } else {
+    strip.className = 'break-strip hidden';
+    strip.innerHTML = '';
+  }
+}
+
+function clearOrdersUI() {
+  allOrders = [];
+  prevOrderIds = null;
+  renderOrders(); updateEarnings(); updateStats();
+  syncLocationSharing();
+}
+
+function applyShiftState() {
+  const st = curShiftState();
+  const prevSt = shiftStateCache;
+  if (st === 'active') shiftSeenActive = true;
+  shiftStateCache = st;
+  const active = st === 'active';
+
+  const app = document.getElementById('app');
+  if (app) app.classList.toggle('shift-active', active);
+
+  // مفيش استقبال طلبات من غير شيفت
+  if (st === 'none' || st === 'loading') {
+    if (unsubOrders || unsubOrders2) {
+      if (unsubOrders)  { unsubOrders();  unsubOrders  = null; }
+      if (unsubOrders2) { unsubOrders2(); unsubOrders2 = null; }
+      clearOrdersUI();
+    }
+  } else if (!unsubOrders && currentDriver) {
+    startOrdersListener();
+  }
+
+  // قفل زرار تسجيل الخروج طول الشيفت
+  document.querySelectorAll('.logout-btn, .logout-big-btn').forEach(b => {
+    b.classList.toggle('locked', active);
+    if (b.classList.contains('logout-btn')) b.textContent = active ? '🔒' : '🚪';
+    else b.textContent = active ? '🔒 تسجيل الخروج مقفول — الشيفت شغال' : '🚪 تسجيل خروج';
+  });
+
+  if (prevSt === 'active' && st === 'ended') {
+    const er = currentShift && currentShift.exitRequest;
+    if (!(er && er.status === 'approved')) {
+      showToast('⏰ انتهى شيفتك', 'error', 5000);
+      playBeep();
+    }
+  }
+  if (!active && curBreakState() === 'active') { /* الاستراحة بتفضل لحد ما تخلص */ }
+
+  renderShiftOverlay(st);
+  renderShiftStrip(st);
+  updateShiftChip();
+  if (currentDriver) syncLocationSharing();
+}
+
+function tickShift() {
+  if (!shiftLoaded) return;
+  if (curShiftState() !== shiftStateCache) applyShiftState();
+  else updateShiftChip();
+}
+
+function resetShiftState() {
+  if (shiftTicker) { clearInterval(shiftTicker); shiftTicker = null; }
+  currentShift = null; shiftLoaded = false; shiftSeenActive = false;
+  shiftPickerOpen = false; selectedShiftHours = 0; shiftStateCache = null; lastExitStatus = null;
+  const overlay = document.getElementById('shift-overlay'); if (overlay) overlay.classList.add('hidden');
+  const strip = document.getElementById('shift-strip'); if (strip) { strip.className = 'break-strip hidden'; strip.innerHTML = ''; }
+  const app = document.getElementById('app'); if (app) app.classList.remove('shift-active');
+  const pill = document.getElementById('online-pill-text'); if (pill) pill.textContent = 'مباشر';
+  document.querySelectorAll('.logout-btn, .logout-big-btn').forEach(b => {
+    b.classList.remove('locked');
+    b.textContent = b.classList.contains('logout-btn') ? '🚪' : '🚪 تسجيل خروج';
+  });
+}
+
+window.selectShiftOption = function(h) {
+  h = Number(h);
+  if (!SHIFT_OPTIONS.includes(h)) return;
+  selectedShiftHours = h;
+  renderShiftOverlay(curShiftState());
+};
+window.openShiftPicker = function() {
+  selectedShiftHours = 0;
+  shiftPickerOpen = true;
+  renderShiftOverlay(curShiftState());
+};
+window.closeShiftPicker = function() {
+  shiftPickerOpen = false;
+  renderShiftOverlay(curShiftState());
+};
+
+window.confirmStartShift = async function() {
+  const h = selectedShiftHours;
+  if (!SHIFT_OPTIONS.includes(h) || !currentDriver) return;
+  const btn = document.getElementById('shift-start-btn');
+  btn.disabled = true;
+  if (!(await ensureGps(() => window.confirmStartShift()))) { btn.disabled = false; return; }
+  try {
+    const ref = doc(db, 'pilots', currentDriver.id);
+    await runTransaction(db, async tx => {
+      const snap = await tx.get(ref);
+      if (!snap.exists()) throw new Error('الحساب مش موجود');
+      if (shiftIsActive(snap.data().shift)) throw new Error('عندك شيفت شغال بالفعل');
+      const now = Date.now();
+      tx.update(ref, { shift: { hours: h, startedAtMs: now, endsAt: now + h * 3600000, exitRequest: null } });
+    });
+    shiftPickerOpen = false;
+    selectedShiftHours = 0;
+    showToast('▶️ بدأ الشيفت — ' + h + ' ساعات', 'success');
+  } catch(e) {
+    showToast('❌ ' + e.message, 'error');
+    btn.disabled = false;
+  }
+};
+
+// ----- طلب إنهاء الشيفت -----
+window.openExitModal = function() {
+  const left = shiftIsActive(currentShift) ? fmtShiftLeft(Number(currentShift.endsAt) - Date.now()) : '';
+  document.getElementById('exit-note').textContent = 'الشيفت لسه شغال' + (left ? ' (باقي ' + left + ')' : '') + ' ومينفعش تسجّل خروج قبل انتهائه. لو عندك مشكلة اكتب السبب وهنبعت طلب للمدير.';
+  document.getElementById('exit-reason').value = '';
+  document.getElementById('exit-modal').classList.add('show');
+};
+window.closeExitModal = function() {
+  document.getElementById('exit-modal').classList.remove('show');
+};
+document.getElementById('exit-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('exit-modal')) closeExitModal();
+});
+
+window.sendExitRequest = async function() {
+  const reason = (document.getElementById('exit-reason').value || '').trim().slice(0, 200);
+  if (reason.length < 3) { showToast('❌ اكتب سبب الطلب', 'error'); return; }
+  if (!currentDriver) return;
+  try {
+    const ref = doc(db, 'pilots', currentDriver.id);
+    await runTransaction(db, async tx => {
+      const snap = await tx.get(ref);
+      const s = snap.exists() ? snap.data().shift : null;
+      if (!shiftIsActive(s)) throw new Error('مفيش شيفت شغال');
+      if (s.exitRequest && s.exitRequest.status === 'pending') throw new Error('طلبك لسه عند المدير');
+      tx.update(ref, { 'shift.exitRequest': { status: 'pending', reason, requestedAtMs: Date.now() } });
+    });
+    closeExitModal();
+    showToast('📤 طلبك اتبعت للمدير', 'success');
+  } catch(e) {
+    showToast('❌ ' + e.message, 'error');
+  }
+};
+
+window.cancelExitRequest = async function() {
+  if (!currentDriver) return;
+  try {
+    const ref = doc(db, 'pilots', currentDriver.id);
+    await runTransaction(db, async tx => {
+      const snap = await tx.get(ref);
+      const s = snap.exists() ? snap.data().shift : null;
+      if (!s || !s.exitRequest || s.exitRequest.status !== 'pending') throw new Error('المدير رد على الطلب خلاص');
+      tx.update(ref, { 'shift.exitRequest': null });
+    });
+    showToast('تم إلغاء الطلب');
+  } catch(e) {
+    showToast('❌ ' + e.message, 'error');
+  }
+};
+
+window.dismissExitRejected = async function() {
+  if (!currentDriver || !currentShift) return;
+  lastExitStatus = null;
+  try { await updateDoc(doc(db, 'pilots', currentDriver.id), { 'shift.exitRequest': null }); }
+  catch(e) { showToast('❌ ' + e.message, 'error'); }
+};
+
+// تسجيل الخروج — مقفول طول الشيفت
+window.doLogout = async function() {
+  const st = curShiftState();
+  if (st === 'active') {
+    const er = currentShift && currentShift.exitRequest;
+    if (er && er.status === 'pending') {
+      showToast('⏳ طلب إنهاء الشيفت لسه عند المدير', 'error');
+      return;
+    }
+    openExitModal();
+    return;
+  }
+  await performLogout();
+};
+
+async function performLogout() {
+  // امسح مواقع الطلبات المفتوحة وإحنا لسه مسجلين دخول (بعد signOut الصلاحية بتروح)
+  try {
+    allOrders = [];
+    gpsLoggingOut = true;
+    await Promise.race([syncLocationSharing(), new Promise(r => setTimeout(r, 1500))]);
+  } catch(e) {}
+  gpsLoggingOut = false;
+  try { await signOut(auth); } catch(e) {}
+  if (unsubOrders)  { unsubOrders();  unsubOrders  = null; }
+  if (unsubOrders2) { unsubOrders2(); unsubOrders2 = null; }
+  if (unsubService) { unsubService(); unsubService = null; }
+  // إزالة بانر الخدمة المغلقة لو موجود
+  const banner = document.getElementById('service-closed-banner');
+  if (banner) banner.remove();
+  // تحديث الحالة لـ offline
+  stopHeartbeat();
+  stopPilotListener();
+  resetShiftState();
+  renderBreakStrip();
+  if (currentDriver && currentDriver.id) {
+    try { await updateDoc(doc(db, 'pilots', currentDriver.id), { status: 'offline', lastSeen: null }); } catch(e) {}
+  }
+  currentDriver = null;
+  allOrders = [];
+  prevOrderIds = null;
+  currentFilter = 'all';
+  localStorage.removeItem('hat_driver');
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('login-screen').classList.remove('hidden');
+  document.getElementById('login-username').value = '';
+  document.getElementById('login-password').value = '';
+  document.getElementById('login-password').type = 'password';
+  // ريسيت زرار الدخول — من غير كده كان بيفضل واقف على "جاري التحقق..." من آخر مرة سجّل فيها دخول
+  const loginBtn = document.getElementById('login-btn');
+  const loginBtnText = document.getElementById('login-btn-text');
+  if (loginBtn) loginBtn.disabled = false;
+  if (loginBtnText) loginBtnText.textContent = 'دخول 🚀';
+  const passToggleEl = document.getElementById('pass-toggle');
+  if (passToggleEl) passToggleEl.textContent = '👁';
+  document.getElementById('orders-list').innerHTML = '';
+  document.getElementById('earn-list').innerHTML = '';
+  // reset earn counts
+  document.getElementById('earn-today').textContent = '0';
+  document.getElementById('earn-orders-today').textContent = '0';
+  document.getElementById('earn-total').textContent = '0';
+  document.getElementById('stat-delivered').textContent = '0';
+  document.getElementById('stat-cancelled').textContent = '0';
+  document.getElementById('stat-total-earn').textContent = '0';
+  document.getElementById('orders-count-text').textContent = '0 طلب';
+  const badge2 = document.getElementById('pending-badge');
+  if (badge2) badge2.classList.remove('show');
+  // reset filter chips
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  const allChip = document.querySelector('.filter-chip[data-filter="all"]');
+  if (allChip) allChip.classList.add('active');
+  // reset tabs
+  switchTab('orders');
+};
+
+// ========== INIT ==========
+function initDriver() {
+  startHeartbeat();
+  startPilotListener();
+  document.getElementById('topbar-driver-name').textContent  = currentDriver.name;
+  document.getElementById('profile-name-text').textContent   = currentDriver.name;
+  document.getElementById('profile-username-text').textContent = currentDriver.username;
+
+  // مراقبة حالة الخدمة
+  if (unsubService) unsubService();
+  unsubService = onSnapshot(doc(db, 'settings', 'service'), snap => {
+    const isOpen = !snap.exists() || snap.data().open !== false;
+    let banner = document.getElementById('service-closed-banner');
+    if (!isOpen) {
+      if (!banner) {
+        banner = document.createElement('div');
+        banner.id = 'service-closed-banner';
+        banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9998;background:#EF476F;color:#fff;text-align:center;padding:10px 16px;font-size:14px;font-weight:800;font-family:Cairo,sans-serif;';
+        banner.textContent = '⚠️ الخدمة مغلقة حالياً — لا يمكن استقبال طلبات جديدة';
+        document.body.prepend(banner);
+      }
+    } else {
+      if (banner) banner.remove();
+    }
+  }, err => { console.error('[service]', err); showConnBanner('⚠️ فشل الاتصال بحالة الخدمة — البيانات ممكن تبقى قديمة'); });
+  // الطلبات بتبدأ تتسمع بس بعد ما الشيفت يبدأ (applyShiftState)
+}
+
+// ========== ORDERS LISTENER ==========
+// بدل ما نسحب كل الطلبات في الداتابيز ونفلتر عندنا (قراءات بتكبر مع الوقت)،
+// بنسمع بس على طلبات الطيار ده:
+//  1) الطلبات المعيّنة بالـ id
+//  2) الطلبات القديمة المعيّنة بالاسم بس (من غير id)
+// الاتنين equality بس، فمش محتاجين Composite Index.
+function startOrdersListener() {
+  if (unsubOrders)  { unsubOrders();  unsubOrders  = null; }
+  if (unsubOrders2) { unsubOrders2(); unsubOrders2 = null; }
+  prevOrderIds = null;
+
+  const byId = new Map();
+  const byName = new Map();
+  let readyA = false, readyB = false;
+  let lastOrdersSig = null;
+
+  const createdMs = o => tsMs(o.createdAtTs) || 0;
+
+  const refresh = () => {
+    if (!readyA || !readyB) return; // نستنى أول نتيجة من الاتنين
+    const merged = new Map([...byName, ...byId]);
+    const newOrders = [...merged.values()].filter(isMine).sort((a, b) => createdMs(b) - createdMs(a));
+
+    // تحديثات الموقع بس (كل ~10 ثواني) مش بتعمل إعادة رسم للقايمة
+    const sig = JSON.stringify(newOrders);
+    if (sig === lastOrdersSig) return;
+    lastOrdersSig = sig;
+
+    // إشعار طلب جديد
+    if (prevOrderIds !== null) {
+      const hasNew = newOrders.some(o => !prevOrderIds.has(o.id));
+      if (hasNew) {
+        const notif = document.getElementById('new-order-notif');
+        notif.classList.add('show');
+        setTimeout(() => notif.classList.remove('show'), 4000);
+        playBeep();
+      }
+    }
+    prevOrderIds = new Set(newOrders.map(o => o.id));
+
+    allOrders = newOrders;
+    renderOrders();
+    updateEarnings();
+    updateStats();
+    syncChatListeners();
+    syncLocationSharing();
+  };
+
+  const onErr = err => showToast('❌ خطأ في الاتصال: ' + err.message, 'error');
+  const collect = (snap, target, legacyOnly) => {
+    target.clear();
+    snap.docs.forEach(d => {
+      if (!SAFE_ID.test(d.id)) return; // تجاهل أي id غريب
+      const { pilotLocation: _pl, ...data } = d.data();
+      if (legacyOnly && data.assignedPilotId) return;
+      target.set(d.id, { id: d.id, ...data });
+    });
+  };
+
+  unsubOrders = onSnapshot(
+    query(collection(db, 'orders'), where('assignedPilotId', '==', currentDriver.id)),
+    snap => { collect(snap, byId, false); readyA = true; refresh(); },
+    onErr
+  );
+  unsubOrders2 = onSnapshot(
+    query(collection(db, 'orders'), where('assignedPilot', '==', currentDriver.name)),
+    snap => { collect(snap, byName, true); readyB = true; refresh(); },
+    // listener الطلبات القديمة (بالاسم) ممكن الـ rules ترفضه — مش مشكلة، نكمّل بطلبات الـ ID بس
+    err => {
+      console.warn('legacy orders listener denied:', err && err.message);
+      byName.clear();
+      readyB = true;
+      refresh();
+    }
+  );
+}
+
+// ========== FILTER ==========
+window.setFilter = function(el, filter) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderOrders();
+};
+
+// ========== RENDER ORDERS ==========
+function renderOrders() {
+  const filtered = currentFilter === 'all'
+    ? allOrders
+    : allOrders.filter(o => o.status === currentFilter);
+
+  const count = filtered.length;
+  document.getElementById('orders-count-text').textContent = count + ' طلب';
+
+  // badge عدد الطلبات الجديدة
+  const pendingCount = allOrders.filter(o => o.status === 'pending').length;
+  const badge = document.getElementById('pending-badge');
+  if (pendingCount > 0) { badge.textContent = pendingCount; badge.classList.add('show'); }
+  else { badge.classList.remove('show'); }
+
+  const list = document.getElementById('orders-list');
+  if (count === 0) {
+    list.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">📭</div>
+      <div class="empty-title">مفيش طلبات دلوقتي</div>
+      <div class="empty-sub">لما يجي طلب هيظهر هنا فوراً</div>
+    </div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(o => buildOrderCard(o)).join('');
+}
+
+// ====== CHAT (نص بس، خاص بكل طلب) ======
+const chatUnsubsByOrder = {};
+const chatMessagesByOrder = {};
+let activeChatOrderId = null;
+let chatErrShown = false;
+
+function chatLastReadKey(orderId) { return 'hat_chat_lastread_' + orderId; }
+function getChatLastRead(orderId) {
+  try { return parseInt(localStorage.getItem(chatLastReadKey(orderId))) || 0; } catch(e) { return 0; }
+}
+function setChatLastRead(orderId, ms) {
+  try { localStorage.setItem(chatLastReadKey(orderId), String(ms)); } catch(e) {}
+}
+
+// بيشغّل استماع لكل طلب نشط عنده شات، وبيقفل استماع أي طلب خرج من القائمة (اتسلّم/اتلغى)
+function syncChatListeners() {
+  const activeIds = new Set(allOrders.filter(o => o.status !== 'delivered' && o.status !== 'cancelled').map(o => o.id));
+  activeIds.forEach(id => {
+    if (chatUnsubsByOrder[id]) return;
+    chatUnsubsByOrder[id] = onSnapshot(
+      query(collection(db, 'orders', id, 'messages'), orderBy('createdAtMs', 'asc')),
+      snap => {
+        chatMessagesByOrder[id] = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        updateChatBadge(id);
+        if (activeChatOrderId === id) renderChatMessages();
+      },
+      err => {
+        console.error('[chat] listener error:', err);
+        delete chatUnsubsByOrder[id]; // عشان يحاول تاني في التحديث الجاي
+        if (!chatErrShown) {
+          chatErrShown = true;
+          showToast('⚠️ الشات مش شغال (صلاحيات Firestore) — بلّغ المدير', 'error', 5000);
+        }
+      }
+    );
+  });
+  Object.keys(chatUnsubsByOrder).forEach(id => {
+    if (!activeIds.has(id)) { chatUnsubsByOrder[id](); delete chatUnsubsByOrder[id]; delete chatMessagesByOrder[id]; }
+  });
+}
+
+function updateChatBadge(orderId) {
+  const badge = document.getElementById('chat-badge-' + orderId);
+  if (!badge) return;
+  const msgs = chatMessagesByOrder[orderId] || [];
+  const lastRead = getChatLastRead(orderId);
+  const unread = msgs.filter(m => m.senderType !== 'pilot' && (m.createdAtMs || 0) > lastRead).length;
+  if (unread > 0 && activeChatOrderId !== orderId) {
+    badge.textContent = unread > 9 ? '9+' : String(unread);
+    badge.classList.remove('hidden');
+  } else {
+    badge.classList.add('hidden');
+  }
+}
+
+function renderChatMessages() {
+  const list = document.getElementById('chat-messages');
+  const msgs = chatMessagesByOrder[activeChatOrderId] || [];
+  if (!msgs.length) {
+    list.innerHTML = '<div class="chat-empty">لسه مفيش رسايل — ابدأ المحادثة</div>';
+    return;
+  }
+  list.innerHTML = msgs.map(m => {
+    const mine = m.senderType === 'pilot';
+    let timeStr = '';
+    try { timeStr = new Date(m.createdAtMs || 0).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }); } catch(e) {}
+    return `<div class="chat-bubble ${mine ? 'me' : 'them'}">${esc(m.text || '')}<span class="chat-bubble-time">${timeStr}</span></div>`;
+  }).join('');
+  list.scrollTop = list.scrollHeight;
+}
+
+window.openChat = function(orderId) {
+  activeChatOrderId = orderId;
+  document.getElementById('chat-modal').classList.add('show');
+  renderChatMessages();
+  setChatLastRead(orderId, Date.now());
+  updateChatBadge(orderId);
+  setTimeout(() => document.getElementById('chat-input').focus(), 300);
+};
+
+window.closeChat = function() {
+  const id = activeChatOrderId;
+  activeChatOrderId = null;
+  document.getElementById('chat-modal').classList.remove('show');
+  if (id) { setChatLastRead(id, Date.now()); updateChatBadge(id); }
+};
+document.getElementById('chat-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('chat-modal')) closeChat();
+});
+
+window.sendChatMessage = async function() {
+  const input = document.getElementById('chat-input');
+  const text = (input.value || '').trim().slice(0, 500);
+  if (!text || !activeChatOrderId || !currentDriver) return;
+  const btn = document.getElementById('chat-send-btn');
+  btn.disabled = true;
+  try {
+    const msgMs = Date.now();
+    await addDoc(collection(db, 'orders', activeChatOrderId, 'messages'), {
+      senderType: 'pilot',
+      senderName: currentDriver.name || 'الطيار',
+      text,
+      createdAtMs: msgMs,
+      createdAt: serverTimestamp()
+    });
+    // ملخص آخر رسالة على الطلب نفسه — تستخدمه لوحة المدير في صفحة "المحادثات"
+    try {
+      await updateDoc(doc(db, 'orders', activeChatOrderId), {
+        lastMessageAtMs: msgMs,
+        lastMessageText: text,
+        lastMessageSender: 'pilot'
+      });
+    } catch(e) {}
+    input.value = '';
+  } catch(e) {
+    showToast('❌ الرسالة ما اتبعتتش: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    input.focus();
+  }
+};
+document.getElementById('chat-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); sendChatMessage(); }
+});
+
+function buildOrderCard(o) {
+  const meta = STATUS_META[o.status] || { label: esc(o.status || '—'), cls: 'badge-pending' };
+  const payCls = getPayClass(o.payment);
+  const mapsUrl = o.location && o.location.mapsUrl ? safeUrl(o.location.mapsUrl) : '';
+
+  const actions = buildActions(o);
+  const locationBtnHtml = mapsUrl
+    ? `<a href="${esc(mapsUrl)}" target="_blank" rel="noopener noreferrer" class="location-btn">🗺 الموقع على الخريطة</a>`
+    : '';
+  const phoneDial  = telDigits(o.phone);
+  const phone2Dial = telDigits(o.phone2);
+  const callBtnHtml = phoneDial
+    ? `<a href="tel:${esc(phoneDial)}" class="call-btn">📞 كلم العميل</a>`
+    : '';
+  const call2BtnHtml = phone2Dial
+    ? `<a href="tel:${esc(phone2Dial)}" class="call-btn" style="margin-right:6px">📞 الرقم الاحتياطي</a>`
+    : '';
+  const oid = esc(o.id);
+  const chatBtnHtml = (o.status !== 'delivered' && o.status !== 'cancelled')
+    ? `<button type="button" class="chat-btn" onclick="openChat('${oid}')">💬 شات مع العميل<span class="chat-badge-dot hidden" id="chat-badge-${oid}">0</span></button>`
+    : '';
+
+  const estimate = num(o.itemsPrice);
+  const customerNote = o.note ? String(o.note) : '';
+  const orderNote = o.notes && String(o.notes) !== customerNote ? String(o.notes) : '';
+  const shortId = String(o.id).slice(-4).toUpperCase();
+
+  return `
+<div class="order-card status-${esc(o.status)}" id="oc-${esc(o.id)}">
+  <div class="card-top">
+    <div>
+      <div class="card-code">#${esc(o.orderCode || shortId)}</div>
+      <div class="card-time">${esc(o.createdAt || '')}</div>
+    </div>
+    <span class="status-badge ${meta.cls}">${meta.label}</span>
+  </div>
+
+  <div class="card-client">
+    <div class="client-avatar">🧑</div>
+    <div class="client-info">
+      <div class="client-name">${esc(o.name || '—')}</div>
+      <div class="client-phone">${esc(o.phone || '—')}</div>
+      ${callBtnHtml}${call2BtnHtml}${chatBtnHtml}
+    </div>
+  </div>
+
+  <div class="card-address">
+    <div class="addr-icon">📍</div>
+    <div class="addr-text">
+      <div class="addr-zone">${esc(o.address || '—')}</div>
+      ${o.addressDetail ? `<div class="addr-detail">${esc(o.addressDetail)}</div>` : ''}
+      ${locationBtnHtml}
+    </div>
+  </div>
+
+  ${o.items ? `<div class="card-items"><strong>الطلب:</strong> ${esc(o.items)}</div>` : ''}
+  ${o.category ? `<div class="card-items"><strong>الصنف:</strong> ${esc(o.category)}</div>` : ''}
+  ${o.transferredFrom ? `<div class="card-items" style="color:var(--info)">🔄 الطلب ده محوّل ليك من الطيار: ${esc(o.transferredFrom)}</div>` : ''}
+  ${customerNote ? `<div class="card-items"><strong>ملاحظة العميل:</strong> ${esc(customerNote)}</div>` : ''}
+  ${orderNote ? `<div class="card-items"><strong>ملاحظة على الطلب:</strong> ${esc(orderNote)}</div>` : ''}
+
+  <div class="card-footer">
+    <div class="card-amounts">
+      ${estimate ? `<div class="amount-item"><div class="amount-num" style="color:var(--text-muted);font-size:13px">${estimate}</div><div class="amount-lbl">تقدير العميل</div></div>` : ''}
+      <div class="amount-item">
+        <div class="amount-num">${num(o.deliveryPrice)}</div>
+        <div class="amount-lbl">توصيلة</div>
+      </div>
+      <div class="amount-item">
+        <div class="amount-num">${orderTotal(o)}</div>
+        <div class="amount-lbl">الإجمالي</div>
+      </div>
+    </div>
+    <span class="payment-tag ${payCls}">${esc(o.payment || 'كاش')}</span>
+  </div>
+
+  ${actions}
+</div>`;
+}
+
+function buildActions(o) {
+  if (o.status === 'cancelled' || o.status === 'delivered') return '';
+  if (!currentDriver) return '';
+
+  // الطلب مش معين للطيار ده
+  if (!isMine(o)) {
+    return `<div class="status-actions"><div style="font-size:12px;color:var(--text-muted);text-align:center;width:100%">🔒 الطلب ده مش معين ليك</div></div>`;
+  }
+
+  let btns = '';
+  const id = esc(o.id);
+
+  if (o.status === 'pending') {
+    btns += `<button class="action-btn btn-accept pending-glow" onclick="updateStatus('${id}','preparing')">✅ قبول وبدء الطلب</button>`;
+  }
+  if (o.status === 'preparing') {
+    btns += `<button class="action-btn btn-ready" onclick="updateStatus('${id}','ready')">✅ جاهز للتسليم</button>`;
+  }
+  if (o.status === 'ready') {
+    btns += `<button class="action-btn btn-delivered" onclick="updateStatus('${id}','delivered')">📦 تم التسليم</button>`;
+  }
+  btns += `<button class="action-btn btn-note" onclick="openNoteModal('${id}')">✏️ ملاحظة</button>`;
+
+  return `<div class="status-actions">${btns}</div>`;
+}
+
+// ========== LIVE LOCATION SHARING ==========
+// طول ما فيه طلب "في الطريق" (ready) بنشارك موقع الطيار مع العميل في حقل pilotLocation جوه مستند الطلب نفسه
+// (من غير أي collection جديد، فمفيش تعديل على Firestore rules)
+const GPS_MIN_INTERVAL_MS = 10000;   // أقل فاصل بين كتابتين
+const GPS_MAX_INTERVAL_MS = 30000;   // لو واقف، نجدد كل 30 ثانية بس
+const GPS_MIN_MOVE_M      = 15;      // أقل مسافة تحرك تستاهل كتابة جديدة
+const GPS_MAX_ACCURACY_M  = 300;     // نتجاهل القراءات الأقل دقة من كده
+let gpsWatchId = null;
+let gpsOrderIds = new Set();
+let gpsLastWriteMs = 0;
+let gpsLastWritten = null;
+let gpsLastPos = null;
+let gpsLastFixMs = 0;
+// مشاركة الموقع مع الإدارة طول الشيفت (في حقل location جوه مستند الطيار) — بتقف وقت الاستراحة
+const PILOT_LOC_MIN_MS   = 30000;    // أقل فاصل بين كتابتين
+const PILOT_LOC_MAX_MS   = 90000;    // لو واقف، نجدد كل 90 ثانية بس
+const PILOT_LOC_MIN_MOVE = 40;       // أقل مسافة تحرك (متر) تستاهل كتابة جديدة
+let gpsShiftShare = false;
+let gpsLoggingOut = false;
+let gpsPilotLastWriteMs = 0;
+let gpsPilotLastWritten = null;
+let gpsState = 'idle';               // idle | waiting | ok | denied | unavailable
+let gpsWakeLock = null;
+let gpsWriteErrShown = false;
+
+function gpsDistM(a, b) {
+  const R = 6371000, rad = x => x * Math.PI / 180;
+  const dLat = rad(b.lat - a.lat), dLng = rad(b.lng - a.lng);
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+
+function renderGpsStrip() {
+  const el = document.getElementById('gps-strip');
+  if (!el) return;
+  el.textContent = '';
+  if ((gpsOrderIds.size === 0 && !gpsShiftShare) || gpsState === 'idle') { el.className = 'break-strip hidden'; return; }
+  const msg = document.createElement('span');
+  if (gpsState === 'ok') {
+    el.className = 'break-strip gps-ok';
+    msg.textContent = gpsOrderIds.size > 0 ? '📡 موقعك بيتشارك مع العميل والإدارة' : '📡 موقعك بيتشارك مع الإدارة طول الشيفت';
+  } else if (gpsState === 'waiting') {
+    el.className = 'break-strip gps-wait';
+    msg.textContent = '📡 بنحدد موقعك...';
+  } else if (gpsState === 'denied') {
+    el.className = 'break-strip gps-off';
+    msg.textContent = gpsOrderIds.size > 0 ? '⚠️ الموقع مقفول — العميل مش شايف مكانك' : '⚠️ الموقع مقفول — الإدارة مش شايفة مكانك';
+  } else {
+    el.className = 'break-strip gps-off';
+    msg.textContent = '⚠️ جهازك مش بيدعم تحديد الموقع';
+  }
+  el.appendChild(msg);
+  if (gpsState === 'denied') {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = 'فعّل';
+    b.onclick = () => window.retryGps();
+    el.appendChild(b);
+  }
+}
+
+function setGpsState(st) {
+  if (gpsState === st) return;
+  gpsState = st;
+  renderGpsStrip();
+}
+
+async function requestWakeLock() {
+  try {
+    if ('wakeLock' in navigator && !gpsWakeLock) {
+      gpsWakeLock = await navigator.wakeLock.request('screen');
+      gpsWakeLock.addEventListener('release', () => { gpsWakeLock = null; });
+    }
+  } catch (e) { /* مش أساسي */ }
+}
+function releaseWakeLock() {
+  try { if (gpsWakeLock) gpsWakeLock.release(); } catch (e) {}
+  gpsWakeLock = null;
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && gpsWatchId !== null) requestWakeLock();
+});
+
+function writePilotLocation(ids, p) {
+  gpsLastWriteMs = Date.now();
+  gpsLastWritten = p;
+  ids.forEach(id => {
+    updateDoc(doc(db, 'orders', id), {
+      pilotLocation: {
+        lat: +p.lat.toFixed(6), lng: +p.lng.toFixed(6),
+        heading: p.heading, speed: p.speed, accuracy: p.accuracy,
+        updatedAt: serverTimestamp()
+      }
+    }).catch(err => {
+      if (!gpsWriteErrShown) {
+        gpsWriteErrShown = true;
+        showToast('❌ مش قادر أبعت موقعك للعميل — بلّغ الإدارة', 'error');
+      }
+      console.warn('pilotLocation write failed:', err && err.message);
+    });
+  });
+}
+
+function maybeWritePilotDocLocation(p) {
+  if (!gpsShiftShare || !currentDriver || !currentDriver.id) return;
+  const since = Date.now() - gpsPilotLastWriteMs;
+  if (since < PILOT_LOC_MIN_MS) return;
+  const moved = gpsPilotLastWritten ? gpsDistM(gpsPilotLastWritten, p) : Infinity;
+  if (moved < PILOT_LOC_MIN_MOVE && since < PILOT_LOC_MAX_MS) return;
+  gpsPilotLastWriteMs = Date.now();
+  gpsPilotLastWritten = p;
+  updateDoc(doc(db, 'pilots', currentDriver.id), {
+    location: { lat: +p.lat.toFixed(6), lng: +p.lng.toFixed(6), accuracy: p.accuracy, updatedAt: serverTimestamp() }
+  }).catch(err => console.warn('pilot location write failed:', err && err.message));
+}
+
+function onGpsPos(pos) {
+  const c = pos.coords;
+  if (c.accuracy && c.accuracy > GPS_MAX_ACCURACY_M) return;
+  const p = {
+    lat: c.latitude, lng: c.longitude,
+    heading: (c.heading != null && !isNaN(c.heading)) ? c.heading : null,
+    speed: (c.speed != null && !isNaN(c.speed)) ? c.speed : null,
+    accuracy: c.accuracy != null ? Math.round(c.accuracy) : null
+  };
+  gpsLastPos = p;
+  gpsLastFixMs = Date.now();
+  setGpsState('ok');
+  maybeWritePilotDocLocation(p);
+  if (gpsOrderIds.size === 0) return;
+  const since = Date.now() - gpsLastWriteMs;
+  if (since < GPS_MIN_INTERVAL_MS) return;
+  const moved = gpsLastWritten ? gpsDistM(gpsLastWritten, p) : Infinity;
+  if (moved < GPS_MIN_MOVE_M && since < GPS_MAX_INTERVAL_MS) return;
+  writePilotLocation([...gpsOrderIds], p);
+}
+
+function onGpsErr(err) {
+  if (err && err.code === 1) {            // PERMISSION_DENIED
+    if (gpsWatchId !== null) { navigator.geolocation.clearWatch(gpsWatchId); gpsWatchId = null; }
+    releaseWakeLock();
+    setGpsState('denied');
+  } else {
+    setGpsState('waiting');                // إشارة ضعيفة/timeout — الـ watch بيكمل لوحده
+  }
+}
+
+function startGpsWatch() {
+  if (gpsWatchId !== null) return;
+  if (!navigator.geolocation) { setGpsState('unavailable'); return; }
+  setGpsState('waiting');
+  requestWakeLock();
+  gpsWatchId = navigator.geolocation.watchPosition(onGpsPos, onGpsErr,
+    { enableHighAccuracy: true, maximumAge: 3000, timeout: 20000 });
+}
+
+function stopGpsWatch() {
+  if (gpsWatchId !== null && navigator.geolocation) navigator.geolocation.clearWatch(gpsWatchId);
+  gpsWatchId = null;
+  releaseWakeLock();
+  gpsLastPos = null; gpsLastFixMs = 0; gpsLastWritten = null; gpsLastWriteMs = 0;
+  gpsPilotLastWriteMs = 0; gpsPilotLastWritten = null;
+  gpsWriteErrShown = false;
+  setGpsState('idle');
+}
+
+// بتتنادى كل ما قايمة الطلبات أو الشيفت أو الاستراحة تتغير: بتشغّل/توقف مشاركة الموقع
+//  - مع العميل: طول ما فيه طلب "في الطريق"
+//  - مع الإدارة: طول الشيفت، ما عدا وقت الاستراحة
+function syncLocationSharing() {
+  const next = new Set(currentDriver ? allOrders.filter(o => o.status === 'ready' && isMine(o)).map(o => o.id) : []);
+  const removed = [...gpsOrderIds].filter(id => !next.has(id));
+  const added   = [...next].filter(id => !gpsOrderIds.has(id));
+  gpsOrderIds = next;
+
+  const shareNext = !gpsLoggingOut && !!currentDriver && curShiftState() === 'active' && curBreakState() !== 'active';
+  const wasSharing = gpsShiftShare;
+  gpsShiftShare = shareNext;
+
+  // نمسح المواقع أول ما المشاركة تقف (best-effort)
+  const deletions = removed.map(id => updateDoc(doc(db, 'orders', id), { pilotLocation: null }).catch(() => {}));
+  if (wasSharing && !shareNext && currentDriver && currentDriver.id) {
+    deletions.push(updateDoc(doc(db, 'pilots', currentDriver.id), { location: null }).catch(() => {}));
+  }
+
+  if (next.size === 0 && !shareNext) stopGpsWatch();
+  else {
+    startGpsWatch();
+    if (added.length && gpsLastPos) writePilotLocation(added, gpsLastPos); // العميل يشوف الطيار فوراً
+    if (shareNext && !wasSharing && gpsLastPos) maybeWritePilotDocLocation(gpsLastPos);
+    renderGpsStrip();
+  }
+  return Promise.all(deletions);
+}
+setInterval(() => { if (currentDriver) syncLocationSharing(); }, 15000);
+
+window.retryGps = function() {
+  if (!navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition(
+    () => { startGpsWatch(); },
+    () => showToast('الموقع لسه مقفول — فعّله من إعدادات المتصفح للموقع ده وجرّب تاني', 'error'),
+    { enableHighAccuracy: true, timeout: 10000 }
+  );
+};
+
+// ========== GPS إجباري ==========
+// الطيار مينفعش يبدأ شيفت ولا يقبل طلب ولا يخرج للتوصيل من غير GPS شغال
+const GPS_MSGS = {
+  denied: 'إذن الموقع مقفول للتطبيق ده. افتح إعدادات المتصفح (أو التطبيق) ← الأذونات ← الموقع، واختار "سماح"، وبعدين دوس "جرّب تاني".',
+  unavailable: 'جهازك أو المتصفح مش بيدعم تحديد الموقع. جرّب من متصفح تاني أو جهاز تاني.',
+  error: 'مش قادر أحدد موقعك دلوقتي. اتأكد إن الـ GPS (خدمات الموقع) شغال في الموبايل وإنك مش جوه مكان مقفول، وبعدين دوس "جرّب تاني".'
+};
+let gpsModalRetryFn = null;
+
+function showGpsRequired(kind, retryFn) {
+  gpsModalRetryFn = retryFn || null;
+  document.getElementById('gps-modal-msg').textContent = GPS_MSGS[kind] || GPS_MSGS.error;
+  document.getElementById('gps-modal').classList.add('show');
+}
+window.closeGpsModal = function() {
+  document.getElementById('gps-modal').classList.remove('show');
+  gpsModalRetryFn = null;
+};
+window.gpsModalRetry = async function() {
+  const fn = gpsModalRetryFn;
+  document.getElementById('gps-modal').classList.remove('show');
+  gpsModalRetryFn = null;
+  if (fn) await fn();
+  else await ensureGps();
+};
+
+// بترجّع true بس لو لقينا موقع فعلاً. لو لأ بتفتح مودال بيشرح للطيار يفعّله إزاي.
+function ensureGps(retryFn) {
+  if (!navigator.geolocation) { showGpsRequired('unavailable', retryFn); return Promise.resolve(false); }
+  if (gpsWatchId !== null && gpsLastFixMs && Date.now() - gpsLastFixMs < 30000) return Promise.resolve(true);
+  return new Promise(resolve => {
+    navigator.geolocation.getCurrentPosition(
+      () => resolve(true),
+      err => { showGpsRequired(err && err.code === 1 ? 'denied' : 'error', retryFn); resolve(false); },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+    );
+  });
+}
+
+// ========== UPDATE STATUS ==========
+const updatingOrders = new Set();
+
+// كل حالة جديدة مسموح بيها من حالة واحدة بس — بيمنع التعارض
+// (مثلاً العميل لغى الطلب في نفس اللحظة اللي الطيار داس فيها "قبول")
+const PREV_STATUS = { preparing: 'pending', ready: 'preparing', delivered: 'ready' };
+
+window.updateStatus = async function(orderId, newStatus) {
+  if (!PREV_STATUS[newStatus]) return;
+  if (newStatus === 'preparing' && curShiftState() !== 'active') {
+    showToast('🕐 ابدأ الشيفت الأول عشان تستقبل طلبات', 'error');
+    return;
+  }
+  if (newStatus === 'preparing' && curBreakState() === 'active') {
+    showToast('☕ إنت في استراحة — ارجع للشغل الأول', 'error');
+    return;
+  }
+  if (updatingOrders.has(orderId)) return; // منع التكرار
+  if (newStatus === 'preparing' || newStatus === 'ready') {
+    updatingOrders.add(orderId);
+    const gpsOk = await ensureGps(() => window.updateStatus(orderId, newStatus));
+    updatingOrders.delete(orderId);
+    if (!gpsOk) return;
+    if (updatingOrders.has(orderId)) return;
+  }
+  updatingOrders.add(orderId);
+  const msgs = {
+    preparing: '🔄 جاري التحضير — الطيار في الطريق',
+    ready:     '✅ الطلب جاهز للتسليم — الطيار في الطريق',
+    delivered: '📦 تم التسليم بنجاح ✅'
+  };
+  // تعطيل الأزرار مؤقتاً لمنع الضغط المتكرر
+  const card = document.getElementById('oc-' + orderId);
+  if (card) card.querySelectorAll('.action-btn').forEach(b => b.disabled = true);
+  try {
+    const ref = doc(db, 'orders', orderId);
+    await runTransaction(db, async tx => {
+      const snap = await tx.get(ref);
+      if (!snap.exists()) throw new Error('الطلب ده اتمسح');
+      const cur = snap.data();
+      if (!isMine(cur)) throw new Error('الطلب ده مش معين ليك');
+      if (cur.status !== PREV_STATUS[newStatus]) {
+        const label = (STATUS_META[cur.status] || {}).label || cur.status;
+        throw new Error('حالة الطلب اتغيرت — دلوقتي: ' + label);
+      }
+      const update = {
+        status: newStatus,
+        timeline: arrayUnion({ time: nowStr(), msg: msgs[newStatus] })
+      };
+      if (newStatus === 'preparing') {
+        update.preparingAt = tsNow();
+        update.acceptedBy = currentDriver.id;
+        update.acceptedByName = currentDriver.name;
+        update.acceptedByPhone = currentDriver.phone || null;
+      }
+      if (newStatus === 'ready')     update.leftAt = tsNow();       // وقت خروج الطيار للتوصيل
+      if (newStatus === 'delivered') update.deliveredAt = tsNow();  // وقت التسليم الفعلي
+      tx.update(ref, update);
+    });
+    showToast('✅ تم تحديث حالة الطلب', 'success');
+  } catch(e) {
+    showToast('❌ ' + e.message, 'error');
+    if (card) card.querySelectorAll('.action-btn').forEach(b => b.disabled = false);
+  } finally {
+    updatingOrders.delete(orderId);
+  }
+};
+
+
+// ========== NOTE MODAL ==========
+window.openNoteModal = function(orderId) {
+  activeNoteOrder = orderId;
+  document.getElementById('note-textarea').value = '';
+  document.getElementById('note-modal').classList.add('show');
+};
+
+window.closeNoteModal = function() {
+  document.getElementById('note-modal').classList.remove('show');
+  activeNoteOrder = null;
+};
+
+window.sendNote = async function() {
+  if (!activeNoteOrder) return;
+  const noteOrderId = activeNoteOrder;
+  const note = (document.getElementById('note-textarea').value || '').trim().slice(0, 300);
+  if (!note) { showToast('❌ اكتب ملاحظة الأول', 'error'); return; }
+  const sendBtn = document.querySelector('#note-modal .modal-confirm');
+  if (sendBtn) sendBtn.disabled = true;
+  try {
+    await updateDoc(doc(db, 'orders', noteOrderId), {
+      notes: note,
+      timeline: arrayUnion({ time: nowStr(), msg: '✏️ ملاحظة من الطيار: ' + note })
+    });
+    showToast('✅ تم إرسال الملاحظة', 'success');
+    closeNoteModal();
+  } catch(e) {
+    showToast('❌ خطأ: ' + e.message, 'error');
+  } finally {
+    if (sendBtn) sendBtn.disabled = false;
+  }
+};
+
+document.getElementById('note-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('note-modal')) closeNoteModal();
+});
+
+// ========== EARNINGS ==========
+function updateEarnings() {
+  const now = new Date();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const todayEnd   = todayStart + 86400000;
+
+  const deliveredOrders = allOrders.filter(o => o.status === 'delivered');
+  const todayDelivered  = deliveredOrders.filter(o => {
+    // "النهارده" = وقت التسليم الفعلي، ولو مش موجود نستخدم وقت إنشاء الطلب
+    const ts = tsMs(o.deliveredAt) || tsMs(o.createdAtTs);
+    if (ts) return ts >= todayStart && ts < todayEnd;
+    return false;
+  });
+
+  const totalEarn = deliveredOrders.reduce((s, o) => s + num(o.deliveryPrice), 0);
+  const todayEarn = todayDelivered.reduce((s, o) => s + num(o.deliveryPrice), 0);
+
+  document.getElementById('earn-today').textContent        = todayEarn;
+  document.getElementById('earn-orders-today').textContent = todayDelivered.length;
+  document.getElementById('earn-total').textContent        = totalEarn;
+
+  // قائمة الطلبات المكتملة
+  const earnList = document.getElementById('earn-list');
+  if (deliveredOrders.length === 0) {
+    earnList.innerHTML = `<div class="empty-state" style="padding:30px 20px">
+      <div class="empty-icon">💸</div>
+      <div class="empty-title">لسه مفيش طلبات مكتملة</div>
+    </div>`;
+    return;
+  }
+
+  earnList.innerHTML = deliveredOrders.map(o => `
+    <div class="earn-row">
+      <div class="earn-row-info">
+        <div class="earn-row-code">#${esc(o.orderCode || String(o.id).slice(-4).toUpperCase())} — ${esc(o.name || '')}</div>
+        <div class="earn-row-time">${esc(o.createdAt || '')}</div>
+      </div>
+      <div class="earn-row-amount">+${num(o.deliveryPrice)} ج</div>
+    </div>`).join('');
+}
+
+// ========== STATS ==========
+function updateStats() {
+  const delivered = allOrders.filter(o => o.status === 'delivered').length;
+  const cancelled = allOrders.filter(o => o.status === 'cancelled').length;
+  const totalEarn = allOrders.filter(o => o.status === 'delivered').reduce((s, o) => s + num(o.deliveryPrice), 0);
+
+  document.getElementById('stat-delivered').textContent   = delivered;
+  document.getElementById('stat-cancelled').textContent   = cancelled;
+  document.getElementById('stat-total-earn').textContent  = totalEarn;
+}
+
+// ========== TABS ==========
+window.switchTab = function(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('panel-' + tab).classList.add('active');
+};
+
+// ========== PASSWORD TOGGLE ==========
+document.getElementById('pass-toggle').addEventListener('click', () => {
+  const inp = document.getElementById('login-password');
+  const tog = document.getElementById('pass-toggle');
+  if (inp.type === 'password') { inp.type = 'text'; tog.textContent = '🙈'; }
+  else { inp.type = 'password'; tog.textContent = '👁'; }
+});
+
+// ========== ENTER KEY LOGIN ==========
+document.getElementById('login-password').addEventListener('keydown', e => {
+  if (e.key === 'Enter') window.doLogin();
+});
+document.getElementById('login-username').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('login-password').focus();
+});
+
+// ========== RESTORE SESSION ==========
+// Firebase Auth نفسه بيحفظ الجلسة (مش localStorage)، فبنستنى حالته أول ما الصفحة تفتح
+let authRestoring = true;
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    authRestoring = false;
+    localStorage.removeItem('hat_driver');
+    return;
+  }
+  try {
+    const snap = await getDocs(query(collection(db, 'pilots'), where('authUid', '==', user.uid)));
+    if (snap.empty) {
+      // الحساب اتشال من pilots أو لسه مش مربوط — منعرفوش نكمّل بيه
+      authRestoring = false;
+      try { await signOut(auth); } catch(e) {}
+      return;
+    }
+    const match = snap.docs[0];
+    const p = match.data();
+    currentDriver = { id: match.id, username: (user.email || '').split('@')[0], name: p.name || '', phone: p.phone || '' };
+    localStorage.setItem('hat_driver', JSON.stringify(currentDriver));
+    if (!p.status || p.status === 'offline') {
+      try { await updateDoc(doc(db, 'pilots', match.id), { status: 'online' }); } catch(e) {}
+    }
+    authRestoring = false;
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    initDriver();
+  } catch(e) {
+    // مفيش نت — هنحاول تاني لما onAuthStateChanged يتنده تاني أو المستخدم يدخل يدوي
+    authRestoring = false;
+  }
+});
+</script>
+</body>
+</html>
