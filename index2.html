@@ -3407,12 +3407,13 @@ async function pfLoadStats() {
   const c = currentCustomer;
   const box = pfEl('pf-stats');
   box.classList.remove('show');
-  if (!c || !c.phone) return;
+  if (!c || !c.uid) return;
   try {
     const col = collection(db, 'orders');
+    // بالـ customerId (مش بالتليفون) — الـ rules مبقتش بتسمح بالقراءة بالتليفون
     const [all, done] = await Promise.all([
-      getCountFromServer(query(col, where('phone', '==', c.phone))),
-      getCountFromServer(query(col, where('phone', '==', c.phone), where('status', '==', 'delivered')))
+      getCountFromServer(query(col, where('customerId', '==', c.uid))),
+      getCountFromServer(query(col, where('customerId', '==', c.uid), where('status', '==', 'delivered')))
     ]);
     if (!currentCustomer || currentCustomer.uid !== c.uid) return;
     pfEl('pf-stat-total').textContent = all.data().count.toLocaleString('ar-EG');
@@ -5114,13 +5115,18 @@ document.querySelectorAll('.star-btn').forEach(btn => {
 // ====== HISTORY ======
 let historyListenerAdded = false;
 
-async function loadHistory(phone) {
-  if (!phone || typeof phone !== 'string' || phone.trim().length < 10) return;
+async function loadHistory(_unused) {
+  // السجل بقى بالـ customerId (مش بالتليفون) — الـ rules مبقتش بتسمح بالقراءة بالتليفون.
+  // الترتيب والـ limit بيتعملوا هنا عشان منحتاجش composite index جديد.
+  const uid = (currentCustomer && currentCustomer.uid) || (auth.currentUser && auth.currentUser.uid);
+  if (!uid) return;
   try {
-    const q = query(collection(db, 'orders'), where('phone', '==', phone), orderBy('createdAtTs', 'desc'), limit(10));
-    const snap = await getDocs(q);
+    const snap = await getDocs(query(collection(db, 'orders'), where('customerId', '==', uid)));
     const myOrders = [];
     snap.forEach(d => { myOrders.push({id: d.id, ...d.data()}); });
+    const tsSec = o => (o.createdAtTs && typeof o.createdAtTs.seconds === 'number') ? o.createdAtTs.seconds : Date.now() / 1000;
+    myOrders.sort((a, b) => tsSec(b) - tsSec(a));
+    myOrders.length = Math.min(myOrders.length, 10);
     if (myOrders.length === 0) return;
     document.getElementById('history-section').style.display = 'block';
     const STATUS_LABELS = {

@@ -1771,7 +1771,7 @@ function startOrdersListener() {
 
   const byId = new Map();
   const byName = new Map();
-  let readyA = false, readyB = false;
+  let readyA = false, readyB = true; // listener الطلبات القديمة (بالاسم) اتشال — الـ rules مبقتش بتسمح بيه
   let lastOrdersSig = null;
 
   const createdMs = o => tsMs(o.createdAtTs) || 0;
@@ -1821,17 +1821,6 @@ function startOrdersListener() {
     query(collection(db, 'orders'), where('assignedPilotId', '==', currentDriver.id)),
     snap => { collect(snap, byId, false); readyA = true; refresh(); },
     onErr
-  );
-  unsubOrders2 = onSnapshot(
-    query(collection(db, 'orders'), where('assignedPilot', '==', currentDriver.name)),
-    snap => { collect(snap, byName, true); readyB = true; refresh(); },
-    // listener الطلبات القديمة (بالاسم) ممكن الـ rules ترفضه — مش مشكلة، نكمّل بطلبات الـ ID بس
-    err => {
-      console.warn('legacy orders listener denied:', err && err.message);
-      byName.clear();
-      readyB = true;
-      refresh();
-    }
   );
 }
 
