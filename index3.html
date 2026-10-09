@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="theme-color" content="#FF6B35"/>
-<title>هات — الطيار 🛵</title>
+<title>هات — الطيار</title>
 <!-- PWA -->
 <link rel="manifest" href="manifest-pilot.json"/>
 <meta name="mobile-web-app-capable" content="yes"/>
@@ -12,26 +12,40 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="هات — طيار"/>
 <link rel="apple-touch-icon" href="icon-192.png"/>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 :root {
-  --primary:#FF6B35; --primary-d:#E85520; --primary-glow:rgba(255,107,53,0.22);
-  --accent:#FFD166; --success:#06D6A0; --danger:#EF476F; --info:#4CC9F0; --purple:#9B5DE5;
-  --dark:#0A0A0F; --dark2:#10101A; --dark3:#16161F; --surface:#1E1E2A; --surface2:#262633;
-  --border:rgba(255,255,255,0.06); --border2:rgba(255,255,255,0.12);
-  --text:#F0F0FA; --text-muted:#6E6E8A; --text-dim:#3A3A52;
-  --r:18px; --r-sm:12px; --r-xs:8px;
+  --font:'IBM Plex Sans Arabic','Cairo',system-ui,-apple-system,'Segoe UI',Tahoma,sans-serif;
+  --primary:#FF6B35; --primary-d:#C94A0A; --primary-glow:rgba(255,107,53,0.20);
+  --primary-strong:#C94A0A; --primary-strong-h:#AE3F08;
+  --accent:#F2B73D; --success:#2FC48D; --danger:#F26D73; --info:#5AA9F5; --purple:#A98BE8;
+  --dark:#0C1218; --dark2:#121A22; --dark3:#0F161D; --surface:#17212B; --surface2:#1F2B37;
+  --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.14);
+  --text:#E8EDF2; --text-muted:#8C99A8; --text-dim:#6B7888;
+  --st-pending:#F2B73D;   --st-pending-bg:rgba(242,183,61,0.12);  --st-pending-bd:rgba(242,183,61,0.32);
+  --st-preparing:#5AA9F5; --st-preparing-bg:rgba(90,169,245,0.12); --st-preparing-bd:rgba(90,169,245,0.32);
+  --st-ready:#2FC48D;     --st-ready-bg:rgba(47,196,141,0.12);     --st-ready-bd:rgba(47,196,141,0.32);
+  --st-delivered:#8C99A8; --st-delivered-bg:rgba(140,153,168,0.12); --st-delivered-bd:rgba(140,153,168,0.30);
+  --st-cancelled:#F26D73; --st-cancelled-bg:rgba(242,109,115,0.12); --st-cancelled-bd:rgba(242,109,115,0.32);
+  --r:14px; --r-sm:10px; --r-xs:6px; --r-lg:16px;
 }
 :root[data-theme="light"] {
-  --dark:#F4F4F8; --dark2:#FFFFFF; --dark3:#EDEDF3; --surface:#FFFFFF; --surface2:#F0F0F6;
-  --border:rgba(20,20,35,0.08); --border2:rgba(20,20,35,0.14);
-  --text:#171724; --text-muted:#6B6B85; --text-dim:#A6A6BC;
-  --primary-glow:rgba(255,107,53,0.16);
+  --primary:#D9500C; --primary-glow:rgba(217,80,12,0.16);
+  --accent:#9A6700; --success:#0B7A55; --danger:#C23A41; --info:#1B66B8; --purple:#7A55C8;
+  --dark:#EEEDE8; --dark2:#FFFFFF; --dark3:#F5F4F0; --surface:#FFFFFF; --surface2:#F0EFEA;
+  --border:rgba(18,26,34,0.09); --border2:rgba(18,26,34,0.17);
+  --text:#16202A; --text-muted:#566270; --text-dim:#85909B;
+  --st-pending:#9A6700;   --st-pending-bg:rgba(154,103,0,0.10);   --st-pending-bd:rgba(154,103,0,0.28);
+  --st-preparing:#1B66B8; --st-preparing-bg:rgba(27,102,184,0.09); --st-preparing-bd:rgba(27,102,184,0.26);
+  --st-ready:#0B7A55;     --st-ready-bg:rgba(11,122,85,0.09);      --st-ready-bd:rgba(11,122,85,0.26);
+  --st-delivered:#5A6773; --st-delivered-bg:rgba(90,103,115,0.09); --st-delivered-bd:rgba(90,103,115,0.24);
+  --st-cancelled:#C23A41; --st-cancelled-bg:rgba(194,58,65,0.09);  --st-cancelled-bd:rgba(194,58,65,0.26);
 }
 :root[data-theme="light"] .status-badge, :root[data-theme="light"] .payment-tag { filter: none; }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:hidden}
-body{font-family:'Cairo',sans-serif;direction:rtl;background:var(--dark);color:var(--text);font-size:14px}
+body{font-family:var(--font);direction:rtl;background:var(--dark);color:var(--text);font-size:14px}
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--surface2);border-radius:4px}
@@ -54,7 +68,7 @@ body{font-family:'Cairo',sans-serif;direction:rtl;background:var(--dark);color:v
 .login-bg::after{
   content:'';position:absolute;width:500px;height:500px;
   bottom:-100px;left:-100px;
-  background:radial-gradient(circle,rgba(76,201,240,0.08),transparent 65%);
+  background:radial-gradient(circle,rgba(90,169,245,0.08),transparent 65%);
   animation:bgDrift 13s ease-in-out infinite reverse;
 }
 @keyframes bgDrift{0%,100%{transform:scale(1) translate(0,0)}50%{transform:scale(1.08) translate(15px,-10px)}}
@@ -63,7 +77,7 @@ body{font-family:'Cairo',sans-serif;direction:rtl;background:var(--dark);color:v
   position:relative;z-index:1;
   background:var(--dark2);
   border:1px solid var(--border2);
-  border-radius:28px;
+  border-radius:var(--r-lg);
   padding:40px 28px;
   width:min(380px,100%);
   box-shadow:0 40px 100px rgba(0,0,0,0.7);
@@ -83,32 +97,32 @@ body{font-family:'Cairo',sans-serif;direction:rtl;background:var(--dark);color:v
 }
 @keyframes logoPulse{0%,100%{box-shadow:0 16px 50px var(--primary-glow)}50%{box-shadow:0 16px 60px rgba(255,107,53,0.4)}}
 
-.login-title{font-size:24px;font-weight:900;text-align:center;margin-bottom:4px}
+.login-title{font-size:24px;font-weight:700;text-align:center;margin-bottom:4px}
 .login-title span{
-  background:linear-gradient(135deg,#FF6B35,#FFD166);
+  background:linear-gradient(135deg,#FF6B35,#F2B73D);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
 .login-sub{font-size:13px;color:var(--text-muted);text-align:center;margin-bottom:30px}
 
 .inp-group{margin-bottom:16px}
-.inp-label{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;display:flex;align-items:center;gap:6px}
+.inp-label{font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:7px;display:flex;align-items:center;gap:6px}
 .inp-wrap{position:relative}
 .inp-icon{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none}
 .login-inp{
   width:100%;padding:14px 44px 14px 16px;
   background:var(--surface);border:1.5px solid var(--border);
-  border-radius:var(--r-sm);font-size:15px;font-family:'Cairo',sans-serif;
+  border-radius:var(--r-sm);font-size:15px;font-family:var(--font);
   direction:rtl;outline:none;color:var(--text);transition:all 0.25s;
 }
 .login-inp::placeholder{color:var(--text-dim);font-size:13px}
 .login-inp:focus{border-color:var(--primary);background:rgba(255,107,53,0.04);box-shadow:0 0 0 4px rgba(255,107,53,0.1)}
-.login-inp.error{border-color:var(--danger);background:rgba(239,71,111,0.04)}
+.login-inp.error{border-color:var(--danger);background:rgba(242,109,115,0.04)}
 
 .pass-toggle{position:absolute;left:14px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:16px;color:var(--text-muted);user-select:none;transition:color 0.2s}
 .pass-toggle:hover{color:var(--text)}
 
 .login-error{
-  color:var(--danger);font-size:12px;font-weight:700;
+  color:var(--danger);font-size:12px;font-weight:600;
   margin-bottom:14px;text-align:center;
   display:none;animation:shake 0.4s ease;
 }
@@ -119,7 +133,7 @@ body{font-family:'Cairo',sans-serif;direction:rtl;background:var(--dark);color:v
   width:100%;padding:15px;
   background:linear-gradient(135deg,var(--primary),var(--primary-d));
   color:#fff;border:none;border-radius:var(--r-sm);
-  font-family:'Cairo',sans-serif;font-size:16px;font-weight:800;
+  font-family:var(--font);font-size:16px;font-weight:700;
   cursor:pointer;transition:all 0.25s;
   box-shadow:0 8px 24px var(--primary-glow);
   display:flex;align-items:center;justify-content:center;gap:8px;
@@ -146,8 +160,8 @@ body{font-family:'Cairo',sans-serif;direction:rtl;background:var(--dark);color:v
   border-radius:11px;display:flex;align-items:center;justify-content:center;
   font-size:18px;box-shadow:0 4px 14px var(--primary-glow);
 }
-.tb-brand-name{font-size:18px;font-weight:900;background:linear-gradient(135deg,#FF6B35,#FFD166);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.tb-brand-sub{font-size:9px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase}
+.tb-brand-name{font-size:18px;font-weight:700;background:linear-gradient(135deg,#FF6B35,#F2B73D);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.tb-brand-sub{font-size:11px;color:var(--text-muted);}
 
 .tb-right{display:flex;align-items:center;gap:10px}
 .driver-badge{
@@ -159,22 +173,22 @@ body{font-family:'Cairo',sans-serif;direction:rtl;background:var(--dark);color:v
   width:28px;height:28px;background:linear-gradient(135deg,var(--primary),#FF9A6C);
   border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;
 }
-.driver-name{font-size:12px;font-weight:700;color:var(--text);max-width:80px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.driver-name{font-size:12px;font-weight:600;color:var(--text);max-width:80px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 
 .online-pill{
   display:flex;align-items:center;gap:6px;
-  background:rgba(6,214,160,0.08);border:1px solid rgba(6,214,160,0.2);
-  padding:5px 11px;border-radius:20px;font-size:11px;color:var(--success);font-weight:700;
+  background:rgba(47,196,141,0.08);border:1px solid rgba(47,196,141,0.2);
+  padding:5px 11px;border-radius:20px;font-size:11px;color:var(--success);font-weight:600;
 }
 .online-dot{width:7px;height:7px;border-radius:50%;background:var(--success);animation:livePing 1.5s ease infinite;flex-shrink:0}
-@keyframes livePing{0%{box-shadow:0 0 0 0 rgba(6,214,160,0.6)}70%{box-shadow:0 0 0 8px rgba(6,214,160,0)}100%{box-shadow:0 0 0 0 rgba(6,214,160,0)}}
+@keyframes livePing{0%{box-shadow:0 0 0 0 rgba(47,196,141,0.6)}70%{box-shadow:0 0 0 8px rgba(47,196,141,0)}100%{box-shadow:0 0 0 0 rgba(47,196,141,0)}}
 
 .logout-btn{
   width:34px;height:34px;background:var(--surface);border:1px solid var(--border);
   border-radius:10px;display:flex;align-items:center;justify-content:center;
   cursor:pointer;font-size:14px;transition:all 0.2s;color:var(--text-muted);
 }
-.logout-btn:hover{background:rgba(239,71,111,0.1);border-color:rgba(239,71,111,0.2);color:var(--danger)}
+.logout-btn:hover{background:rgba(242,109,115,0.1);border-color:rgba(242,109,115,0.2);color:var(--danger)}
 
 /* ===== TABS ===== */
 .tabs-bar{
@@ -183,7 +197,7 @@ body{font-family:'Cairo',sans-serif;direction:rtl;background:var(--dark);color:v
 }
 .tab-btn{
   flex:1;padding:12px 8px;border:none;background:transparent;
-  font-family:'Cairo',sans-serif;font-size:12px;font-weight:700;
+  font-family:var(--font);font-size:12px;font-weight:600;
   color:var(--text-muted);cursor:pointer;transition:all 0.2s;
   display:flex;flex-direction:column;align-items:center;gap:3px;
   border-bottom:2px solid transparent;position:relative;
@@ -193,7 +207,7 @@ body{font-family:'Cairo',sans-serif;direction:rtl;background:var(--dark);color:v
 .tab-icon{font-size:18px}
 .tab-badge{
   position:absolute;top:8px;right:calc(50% - 18px);
-  background:var(--danger);color:#fff;font-size:10px;font-weight:800;
+  background:var(--danger);color:#fff;font-size:11px;font-weight:700;
   padding:1px 6px;border-radius:10px;min-width:18px;text-align:center;
   display:none;
 }
@@ -209,18 +223,18 @@ body{font-family:'Cairo',sans-serif;direction:rtl;background:var(--dark);color:v
 .orders-header{
   display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;
 }
-.orders-title{font-size:16px;font-weight:800}
+.orders-title{font-size:16px;font-weight:700}
 .orders-count{
   background:var(--surface);border:1px solid var(--border);
-  padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;color:var(--text-muted);
+  padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;color:var(--text-muted);
 }
 
 .filter-strip{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:2px}
 .filter-strip::-webkit-scrollbar{height:0}
 .filter-chip{
   padding:6px 14px;border-radius:20px;border:1px solid var(--border);
-  background:var(--surface);color:var(--text-muted);font-family:'Cairo',sans-serif;
-  font-size:12px;font-weight:700;cursor:pointer;transition:all 0.18s;white-space:nowrap;
+  background:var(--surface);color:var(--text-muted);font-family:var(--font);
+  font-size:12px;font-weight:600;cursor:pointer;transition:all 0.18s;white-space:nowrap;
 }
 .filter-chip:hover{border-color:var(--border2);color:var(--text)}
 .filter-chip.active{background:rgba(255,107,53,0.1);color:var(--primary);border-color:rgba(255,107,53,0.25)}
@@ -241,17 +255,17 @@ body{font-family:'Cairo',sans-serif;direction:rtl;background:var(--dark);color:v
 .order-card.status-cancelled{border-right:3px solid var(--danger);opacity:0.6}
 
 .card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;gap:10px}
-.card-code{font-size:18px;font-weight:900;color:var(--primary);line-height:1}
+.card-code{font-size:18px;font-weight:700;color:var(--primary);line-height:1}
 .card-time{font-size:11px;color:var(--text-muted);margin-top:2px}
 .status-badge{
-  padding:4px 10px;border-radius:20px;font-size:11px;font-weight:800;
+  padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;
   white-space:nowrap;flex-shrink:0;
 }
-.badge-pending{background:rgba(255,209,102,0.12);color:var(--accent)}
-.badge-preparing{background:rgba(76,201,240,0.12);color:var(--info)}
-.badge-ready{background:rgba(6,214,160,0.12);color:var(--success)}
+.badge-pending{background:rgba(242,183,61,0.12);color:var(--accent)}
+.badge-preparing{background:rgba(90,169,245,0.12);color:var(--info)}
+.badge-ready{background:rgba(47,196,141,0.12);color:var(--success)}
 .badge-delivered{background:rgba(255,255,255,0.05);color:var(--text-muted)}
-.badge-cancelled{background:rgba(239,71,111,0.12);color:var(--danger)}
+.badge-cancelled{background:rgba(242,109,115,0.12);color:var(--danger)}
 
 .card-client{display:flex;align-items:center;gap:10px;margin-bottom:10px}
 .client-avatar{
@@ -260,7 +274,7 @@ body{font-family:'Cairo',sans-serif;direction:rtl;background:var(--dark);color:v
   display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;
 }
 .client-info{}
-.client-name{font-size:14px;font-weight:700}
+.client-name{font-size:14px;font-weight:600}
 .client-phone{font-size:12px;color:var(--text-muted);direction:ltr;text-align:right}
 
 .card-address{
@@ -271,7 +285,7 @@ body{font-family:'Cairo',sans-serif;direction:rtl;background:var(--dark);color:v
 }
 .addr-icon{font-size:15px;flex-shrink:0;margin-top:1px}
 .addr-text{}
-.addr-zone{font-weight:700;margin-bottom:2px}
+.addr-zone{font-weight:600;margin-bottom:2px}
 .addr-detail{color:var(--text-muted);font-size:12px;line-height:1.5}
 
 .card-items{font-size:12px;color:var(--text-muted);margin-bottom:12px;line-height:1.6;border-right:2px solid var(--border2);padding-right:10px}
@@ -280,38 +294,38 @@ body{font-family:'Cairo',sans-serif;direction:rtl;background:var(--dark);color:v
 .card-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
 .card-amounts{display:flex;gap:12px;flex-wrap:wrap}
 .amount-item{text-align:center}
-.amount-num{font-size:16px;font-weight:900;color:var(--accent)}
-.amount-lbl{font-size:10px;color:var(--text-muted);font-weight:600}
+.amount-num{font-size:16px;font-weight:700;color:var(--accent)}
+.amount-lbl{font-size:11px;color:var(--text-muted);font-weight:500}
 
 .payment-tag{
-  padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;
+  padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;
 }
-.pay-cash{background:rgba(6,214,160,0.1);color:var(--success)}
-.pay-vodafone{background:rgba(239,71,111,0.1);color:var(--danger)}
-.pay-instapay{background:rgba(155,93,229,0.1);color:var(--purple)}
+.pay-cash{background:rgba(47,196,141,0.1);color:var(--success)}
+.pay-vodafone{background:rgba(242,109,115,0.1);color:var(--danger)}
+.pay-instapay{background:rgba(169,139,232,0.1);color:var(--purple)}
 .pay-other{background:rgba(255,255,255,0.05);color:var(--text-muted)}
 
 /* ===== STATUS ACTIONS ===== */
 .status-actions{margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap}
 .action-btn{
   flex:1;min-width:120px;padding:10px 14px;border:none;border-radius:var(--r-sm);
-  font-family:'Cairo',sans-serif;font-size:13px;font-weight:800;
+  font-family:var(--font);font-size:13px;font-weight:700;
   cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px;
 }
-.btn-preparing{background:rgba(76,201,240,0.1);color:var(--info);border:1px solid rgba(76,201,240,0.2)}
-.btn-preparing:hover{background:rgba(76,201,240,0.2)}
-.btn-ready{background:rgba(6,214,160,0.1);color:var(--success);border:1px solid rgba(6,214,160,0.2)}
-.btn-ready:hover{background:rgba(6,214,160,0.2)}
+.btn-preparing{background:rgba(90,169,245,0.1);color:var(--info);border:1px solid rgba(90,169,245,0.2)}
+.btn-preparing:hover{background:rgba(90,169,245,0.2)}
+.btn-ready{background:rgba(47,196,141,0.1);color:var(--success);border:1px solid rgba(47,196,141,0.2)}
+.btn-ready:hover{background:rgba(47,196,141,0.2)}
 .btn-delivered{background:rgba(255,107,53,0.1);color:var(--primary);border:1px solid rgba(255,107,53,0.2)}
 .btn-delivered:hover{background:rgba(255,107,53,0.2)}
 .btn-note{background:var(--surface);color:var(--text-muted);border:1px solid var(--border)}
 .btn-note:hover{background:var(--surface2);color:var(--text)}
-.btn-accept{background:rgba(6,214,160,0.12);color:var(--success);border:1px solid rgba(6,214,160,0.25)}
-.btn-accept:hover{background:rgba(6,214,160,0.22)}
-.btn-reject{background:rgba(239,71,111,0.1);color:var(--danger);border:1px solid rgba(239,71,111,0.2)}
-.btn-reject:hover{background:rgba(239,71,111,0.18)}
+.btn-accept{background:rgba(47,196,141,0.12);color:var(--success);border:1px solid rgba(47,196,141,0.25)}
+.btn-accept:hover{background:rgba(47,196,141,0.22)}
+.btn-reject{background:rgba(242,109,115,0.1);color:var(--danger);border:1px solid rgba(242,109,115,0.2)}
+.btn-reject:hover{background:rgba(242,109,115,0.18)}
 .pending-glow{animation:pendingPulse 2s ease-in-out infinite}
-@keyframes pendingPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,209,102,0.2)}50%{box-shadow:0 0 0 8px rgba(255,209,102,0)}}
+@keyframes pendingPulse{0%,100%{box-shadow:0 0 0 0 rgba(242,183,61,0.2)}50%{box-shadow:0 0 0 8px rgba(242,183,61,0)}}
 
 /* ===== NOTE INPUT (inline) ===== */
 .note-input-wrap{display:none;padding-top:10px;animation:noteIn 0.25s ease}
@@ -319,13 +333,13 @@ body{font-family:'Cairo',sans-serif;direction:rtl;background:var(--dark);color:v
 @keyframes noteIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 .note-inp{
   width:100%;padding:10px 14px;background:var(--surface);border:1.5px solid var(--border);
-  border-radius:var(--r-sm);font-size:14px;font-family:'Cairo',sans-serif;
+  border-radius:var(--r-sm);font-size:14px;font-family:var(--font);
   direction:rtl;outline:none;color:var(--text);transition:all 0.2s;resize:none;
 }
 .note-inp:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow)}
 .note-send-btn{
   margin-top:8px;padding:8px 20px;background:var(--primary);color:#fff;border:none;
-  border-radius:var(--r-sm);font-family:'Cairo',sans-serif;font-size:13px;font-weight:800;
+  border-radius:var(--r-sm);font-family:var(--font);font-size:13px;font-weight:700;
   cursor:pointer;transition:all 0.2s;
 }
 .note-send-btn:hover{background:var(--primary-d)}
@@ -336,7 +350,7 @@ body{font-family:'Cairo',sans-serif;direction:rtl;background:var(--dark);color:v
   color:var(--text-muted);
 }
 .empty-icon{font-size:50px;margin-bottom:14px;opacity:0.4}
-.empty-title{font-size:16px;font-weight:700;margin-bottom:6px;color:var(--text-dim)}
+.empty-title{font-size:16px;font-weight:600;margin-bottom:6px;color:var(--text-dim)}
 .empty-sub{font-size:13px}
 
 /* ===== EARNINGS TAB ===== */
@@ -349,10 +363,10 @@ body{font-family:'Cairo',sans-serif;direction:rtl;background:var(--dark);color:v
 }
 .earn-card.full{grid-column:1/-1}
 .earn-icon{font-size:26px;margin-bottom:8px}
-.earn-num{font-size:26px;font-weight:900;color:var(--accent);line-height:1;margin-bottom:4px}
-.earn-lbl{font-size:11px;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:1px}
+.earn-num{font-size:26px;font-weight:700;color:var(--accent);line-height:1;margin-bottom:4px}
+.earn-lbl{font-size:11px;color:var(--text-muted);font-weight:600;}
 
-.earn-section-title{font-size:13px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;margin-top:6px}
+.earn-section-title{font-size:13px;font-weight:700;color:var(--text-muted);margin-bottom:10px;margin-top:6px}
 
 .earn-row{
   background:var(--dark2);border:1px solid var(--border);
@@ -360,9 +374,9 @@ body{font-family:'Cairo',sans-serif;direction:rtl;background:var(--dark);color:v
   display:flex;align-items:center;justify-content:space-between;gap:10px;
 }
 .earn-row-info{}
-.earn-row-code{font-size:13px;font-weight:700;color:var(--primary)}
+.earn-row-code{font-size:13px;font-weight:600;color:var(--primary)}
 .earn-row-time{font-size:11px;color:var(--text-muted)}
-.earn-row-amount{font-size:16px;font-weight:900;color:var(--accent)}
+.earn-row-amount{font-size:16px;font-weight:700;color:var(--accent)}
 
 /* ===== PROFILE TAB ===== */
 .profile-card{
@@ -376,53 +390,53 @@ body{font-family:'Cairo',sans-serif;direction:rtl;background:var(--dark);color:v
   font-size:40px;margin:0 auto 14px;
   box-shadow:0 10px 30px var(--primary-glow);
 }
-.profile-name{font-size:22px;font-weight:900;margin-bottom:4px}
-.profile-role{font-size:12px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase}
+.profile-name{font-size:22px;font-weight:700;margin-bottom:4px}
+.profile-role{font-size:12px;color:var(--text-muted);}
 
 .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
 .stat-box{
   background:var(--dark2);border:1px solid var(--border);
   border-radius:var(--r-sm);padding:14px;text-align:center;
 }
-.stat-num{font-size:22px;font-weight:900;color:var(--primary);line-height:1;margin-bottom:4px}
-.stat-lbl{font-size:10px;color:var(--text-muted);font-weight:600;text-transform:uppercase}
+.stat-num{font-size:22px;font-weight:700;color:var(--primary);line-height:1;margin-bottom:4px}
+.stat-lbl{font-size:11px;color:var(--text-muted);font-weight:500;}
 
 .profile-section{
   background:var(--dark2);border:1px solid var(--border);
   border-radius:var(--r);overflow:hidden;margin-bottom:14px;
 }
 .profile-section-title{
-  padding:12px 16px;font-size:12px;font-weight:700;color:var(--text-muted);
-  text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border);
+  padding:12px 16px;font-size:12px;font-weight:600;color:var(--text-muted);
+  border-bottom:1px solid var(--border);
 }
 .profile-row{
   padding:14px 16px;display:flex;align-items:center;justify-content:space-between;
   border-bottom:1px solid var(--border);
 }
 .profile-row:last-child{border-bottom:none}
-.profile-row-label{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--text-muted)}
-.profile-row-val{font-size:13px;font-weight:700;color:var(--text)}
+.profile-row-label{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--text-muted)}
+.profile-row-val{font-size:13px;font-weight:600;color:var(--text)}
 
 .logout-big-btn{
   width:100%;padding:14px;
-  background:rgba(239,71,111,0.1);color:var(--danger);
-  border:1px solid rgba(239,71,111,0.2);border-radius:var(--r-sm);
-  font-family:'Cairo',sans-serif;font-size:14px;font-weight:800;
+  background:rgba(242,109,115,0.1);color:var(--danger);
+  border:1px solid rgba(242,109,115,0.2);border-radius:var(--r-sm);
+  font-family:var(--font);font-size:14px;font-weight:700;
   cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;
 }
-.logout-big-btn:hover{background:rgba(239,71,111,0.18)}
+.logout-big-btn:hover{background:rgba(242,109,115,0.18)}
 
 /* ===== TOAST ===== */
 .toast{
   position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);
   background:var(--surface2);border:1px solid var(--border2);
-  padding:12px 22px;border-radius:20px;font-size:13px;font-weight:700;
+  padding:12px 22px;border-radius:20px;font-size:13px;font-weight:600;
   box-shadow:0 16px 40px rgba(0,0,0,0.5);
   opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap;z-index:9000;
 }
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.toast.success{border-color:rgba(6,214,160,0.3);color:var(--success)}
-.toast.error{border-color:rgba(239,71,111,0.3);color:var(--danger)}
+.toast.success{border-color:rgba(47,196,141,0.3);color:var(--success)}
+.toast.error{border-color:rgba(242,109,115,0.3);color:var(--danger)}
 
 /* ===== NOTE MODAL ===== */
 .modal-backdrop{
@@ -433,15 +447,15 @@ body{font-family:'Cairo',sans-serif;direction:rtl;background:var(--dark);color:v
 .modal-backdrop.show{opacity:1;pointer-events:auto}
 .modal-sheet{
   background:var(--dark2);border:1px solid var(--border2);
-  border-radius:24px 24px 0 0;padding:28px 24px;width:min(480px,100%);
+  border-radius:var(--r-lg) var(--r-lg) 0 0;padding:28px 24px;width:min(480px,100%);
   transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.34,1.2,0.64,1);
 }
 .modal-backdrop.show .modal-sheet{transform:translateY(0)}
 .modal-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 20px}
-.modal-title{font-size:18px;font-weight:900;margin-bottom:16px;text-align:center}
+.modal-title{font-size:18px;font-weight:700;margin-bottom:16px;text-align:center}
 .modal-textarea{
   width:100%;padding:13px 16px;background:var(--surface);border:1.5px solid var(--border);
-  border-radius:var(--r-sm);font-size:14px;font-family:'Cairo',sans-serif;
+  border-radius:var(--r-sm);font-size:14px;font-family:var(--font);
   direction:rtl;outline:none;color:var(--text);resize:none;min-height:100px;
 }
 .modal-textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow)}
@@ -449,13 +463,13 @@ body{font-family:'Cairo',sans-serif;direction:rtl;background:var(--dark);color:v
 .modal-cancel{
   flex:1;padding:13px;background:var(--surface);color:var(--text-muted);
   border:1px solid var(--border);border-radius:var(--r-sm);
-  font-family:'Cairo',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:all 0.2s;
+  font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;
 }
 .modal-cancel:hover{background:var(--surface2)}
 .modal-confirm{
   flex:2;padding:13px;background:linear-gradient(135deg,var(--primary),var(--primary-d));
   color:#fff;border:none;border-radius:var(--r-sm);
-  font-family:'Cairo',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:all 0.2s;
+  font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;
   box-shadow:0 6px 20px var(--primary-glow);
 }
 .modal-confirm:hover{opacity:0.9}
@@ -473,7 +487,7 @@ body{font-family:'Cairo',sans-serif;direction:rtl;background:var(--dark);color:v
   position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120px);
   background:linear-gradient(135deg,var(--primary),var(--primary-d));
   color:#fff;padding:14px 26px;border-radius:24px;
-  font-size:14px;font-weight:800;
+  font-size:14px;font-weight:700;
   box-shadow:0 12px 36px var(--primary-glow);
   z-index:7000;transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
   display:flex;align-items:center;gap:8px;cursor:pointer;
@@ -492,22 +506,22 @@ body{font-family:'Cairo',sans-serif;direction:rtl;background:var(--dark);color:v
 /* ===== CLIENT CALL BTN ===== */
 .call-btn{
   display:inline-flex;align-items:center;gap:6px;
-  background:rgba(6,214,160,0.08);border:1px solid rgba(6,214,160,0.2);
+  background:rgba(47,196,141,0.08);border:1px solid rgba(47,196,141,0.2);
   color:var(--success);padding:5px 12px;border-radius:20px;
-  font-size:12px;font-weight:700;text-decoration:none;
+  font-size:12px;font-weight:600;text-decoration:none;
   transition:all 0.2s;margin-top:4px;
 }
-.call-btn:hover{background:rgba(6,214,160,0.16)}
+.call-btn:hover{background:rgba(47,196,141,0.16)}
 
 /* ===== LOCATION BTN ===== */
 .location-btn{
   display:inline-flex;align-items:center;gap:6px;
-  background:rgba(76,201,240,0.08);border:1px solid rgba(76,201,240,0.2);
+  background:rgba(90,169,245,0.08);border:1px solid rgba(90,169,245,0.2);
   color:var(--info);padding:5px 12px;border-radius:20px;
-  font-size:12px;font-weight:700;text-decoration:none;
+  font-size:12px;font-weight:600;text-decoration:none;
   transition:all 0.2s;margin-top:4px;margin-right:6px;
 }
-.location-btn:hover{background:rgba(76,201,240,0.16)}
+.location-btn:hover{background:rgba(90,169,245,0.16)}
 
 /* ===== COMPACT MOBILE LAYOUT — تصغير الواجهة عشان تناسب شاشة الموبايل ===== */
 body{font-size:13px}
@@ -520,13 +534,13 @@ body{font-size:13px}
 .driver-badge{padding:3px 9px;gap:5px}
 .driver-avatar{width:22px;height:22px;font-size:11px}
 .driver-name{font-size:11px;max-width:70px}
-.online-pill{padding:3px 8px;font-size:10px;gap:5px}
+.online-pill{padding:3px 8px;font-size:11px;gap:5px}
 .online-dot{width:6px;height:6px}
 .logout-btn{width:28px;height:28px;font-size:12px;border-radius:8px}
 
 .tab-btn{padding:6px 6px;font-size:11px;gap:1px}
 .tab-icon{font-size:15px}
-.tab-badge{top:4px;font-size:9px;padding:0 5px;min-width:16px}
+.tab-badge{top:4px;font-size:11px;padding:0 5px;min-width:16px}
 .tab-panel{padding:10px;padding-bottom:24px}
 
 .orders-header{margin-bottom:8px}
@@ -538,8 +552,8 @@ body{font-size:13px}
 .order-card{padding:9px 11px;margin-bottom:8px;border-radius:12px}
 .card-top{margin-bottom:6px;gap:8px}
 .card-code{font-size:14px}
-.card-time{font-size:10px;margin-top:1px}
-.status-badge{padding:2px 8px;font-size:10px}
+.card-time{font-size:11px;margin-top:1px}
+.status-badge{padding:2px 8px;font-size:11px}
 
 .card-client{gap:0;margin-bottom:6px}
 .client-avatar{display:none}
@@ -556,8 +570,8 @@ body{font-size:13px}
 
 .card-amounts{gap:10px}
 .amount-num{font-size:13px}
-.amount-lbl{font-size:9px}
-.payment-tag{padding:2px 8px;font-size:10px}
+.amount-lbl{font-size:11px}
+.payment-tag{padding:2px 8px;font-size:11px}
 
 .status-actions{margin-top:7px;padding-top:7px;gap:6px;flex-direction:row}
 .action-btn{min-width:0;padding:7px 10px;font-size:12px;border-radius:9px}
@@ -573,64 +587,308 @@ body{font-size:13px}
 .order-card.status-cancelled .card-client .call-btn{display:none}
 
 /* ===== BREAK REQUEST — طلب استراحة ===== */
-.break-btn{background:rgba(255,190,11,0.12);border:1px solid rgba(255,190,11,0.3);color:var(--accent);padding:3px 10px;border-radius:20px;font-family:'Cairo',sans-serif;font-size:11px;font-weight:800;cursor:pointer}
+.break-btn{background:rgba(242,183,61,0.12);border:1px solid rgba(242,183,61,0.3);color:var(--accent);padding:3px 10px;border-radius:20px;font-family:var(--font);font-size:11px;font-weight:700;cursor:pointer}
 .break-btn.hidden{display:none}
-.break-strip{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 12px;font-size:12px;font-weight:700;border-bottom:1px solid var(--border)}
+.break-strip{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 12px;font-size:12px;font-weight:600;border-bottom:1px solid var(--border)}
 .break-strip.hidden{display:none}
-.break-strip button{flex-shrink:0;padding:4px 12px;border-radius:14px;border:1px solid currentColor;background:transparent;color:inherit;font-family:'Cairo',sans-serif;font-size:11px;font-weight:800;cursor:pointer}
-.break-strip.pending{background:rgba(255,190,11,0.12);color:var(--accent)}
-.break-strip.active{background:rgba(76,201,240,0.12);color:var(--info)}
-.break-strip.ended{background:rgba(239,71,111,0.14);color:var(--danger);animation:livePing 1.5s ease infinite}
-.break-strip.rejected{background:rgba(239,71,111,0.1);color:var(--danger)}
-.break-strip.gps-ok{background:rgba(6,214,160,0.12);color:var(--success)}
-.break-strip.gps-wait{background:rgba(255,190,11,0.12);color:var(--accent)}
-.break-strip.gps-off{background:rgba(239,71,111,0.14);color:var(--danger)}
+.break-strip button{flex-shrink:0;padding:4px 12px;border-radius:14px;border:1px solid currentColor;background:transparent;color:inherit;font-family:var(--font);font-size:11px;font-weight:700;cursor:pointer}
+.break-strip.pending{background:rgba(242,183,61,0.12);color:var(--accent)}
+.break-strip.active{background:rgba(90,169,245,0.12);color:var(--info)}
+.break-strip.ended{background:rgba(242,109,115,0.14);color:var(--danger);animation:livePing 1.5s ease infinite}
+.break-strip.rejected{background:rgba(242,109,115,0.1);color:var(--danger)}
+.break-strip.gps-ok{background:rgba(47,196,141,0.12);color:var(--success)}
+.break-strip.gps-wait{background:rgba(242,183,61,0.12);color:var(--accent)}
+.break-strip.gps-off{background:rgba(242,109,115,0.14);color:var(--danger)}
 .break-options{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:6px}
-.break-opt{padding:14px 6px;border-radius:14px;border:1px solid var(--border2);background:var(--surface);color:var(--text);font-family:'Cairo',sans-serif;font-size:14px;font-weight:800;cursor:pointer;line-height:1.3}
-.break-opt small{display:block;font-size:10px;font-weight:600;color:var(--text-muted)}
-.break-opt:active{background:rgba(255,190,11,0.15);border-color:var(--accent)}
+.break-opt{padding:14px 6px;border-radius:14px;border:1px solid var(--border2);background:var(--surface);color:var(--text);font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;line-height:1.3}
+.break-opt small{display:block;font-size:11px;font-weight:500;color:var(--text-muted)}
+.break-opt:active{background:rgba(242,183,61,0.15);border-color:var(--accent)}
 
 /* ===== SHIFT — الشيفت ===== */
 .shift-overlay{position:fixed;inset:0;z-index:7500;background:var(--dark);display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
 .shift-overlay.hidden{display:none}
 .shift-card{width:min(420px,100%);text-align:center}
 .shift-emoji{font-size:44px;margin-bottom:6px}
-.shift-title{font-size:20px;font-weight:900;margin-bottom:8px}
+.shift-title{font-size:20px;font-weight:700;margin-bottom:8px}
 .shift-sub{font-size:12px;color:var(--text-muted);line-height:1.8;margin-bottom:16px}
 .shift-options{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
-.shift-opt{padding:16px 8px;border-radius:16px;border:1px solid var(--border2);background:var(--surface);color:var(--text);font-family:'Cairo',sans-serif;font-size:24px;font-weight:900;cursor:pointer;line-height:1.2}
-.shift-opt small{display:block;font-size:11px;font-weight:600;color:var(--text-muted)}
+.shift-opt{padding:16px 8px;border-radius:16px;border:1px solid var(--border2);background:var(--surface);color:var(--text);font-family:var(--font);font-size:24px;font-weight:700;cursor:pointer;line-height:1.2}
+.shift-opt small{display:block;font-size:11px;font-weight:500;color:var(--text-muted)}
 .shift-opt.selected{border-color:var(--primary);background:rgba(255,107,53,0.14);color:var(--primary)}
-.shift-start-btn{width:100%;padding:13px;border:none;border-radius:14px;background:linear-gradient(135deg,var(--primary),var(--primary-d));color:#fff;font-family:'Cairo',sans-serif;font-size:15px;font-weight:900;cursor:pointer}
+.shift-start-btn{width:100%;padding:13px;border:none;border-radius:14px;background:linear-gradient(135deg,var(--primary),var(--primary-d));color:#fff;font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer}
 .shift-start-btn:disabled{opacity:.4;cursor:not-allowed}
-.shift-link{display:block;margin:12px auto 0;background:none;border:none;color:var(--text-muted);font-family:'Cairo',sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-decoration:underline}
+.shift-link{display:block;margin:12px auto 0;background:none;border:none;color:var(--text-muted);font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;text-decoration:underline}
 .shift-link.hidden{display:none}
 .shift-loading{color:var(--text-muted);font-size:13px;padding:20px 0}
 .logout-btn.locked,.logout-big-btn.locked{opacity:.55}
 #app:not(.shift-active) .break-btn{display:none}
 .break-strip.multi{gap:6px}
 .break-strip .strip-btns{display:flex;gap:6px;flex-shrink:0}
-.exit-reason{width:100%;min-height:80px;background:var(--surface);border:1px solid var(--border2);border-radius:12px;color:var(--text);font-family:'Cairo',sans-serif;font-size:13px;padding:10px;resize:none;margin-bottom:4px}
+.exit-reason{width:100%;min-height:80px;background:var(--surface);border:1px solid var(--border2);border-radius:12px;color:var(--text);font-family:var(--font);font-size:13px;padding:10px;resize:none;margin-bottom:4px}
 .exit-note{font-size:12px;color:var(--text-muted);line-height:1.7;margin-bottom:10px;text-align:center}
 
 /* ===== CHAT ===== */
-.chat-btn{position:relative;display:inline-flex;align-items:center;gap:6px;background:rgba(76,201,240,0.08);border:1px solid rgba(76,201,240,0.25);color:var(--info);padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;margin-top:4px}
-.chat-badge-dot{position:absolute;top:-4px;left:-4px;min-width:15px;height:15px;padding:0 3px;border-radius:8px;background:var(--danger);color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.chat-btn{position:relative;display:inline-flex;align-items:center;gap:6px;background:rgba(90,169,245,0.08);border:1px solid rgba(90,169,245,0.25);color:var(--info);padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);margin-top:4px}
+.chat-badge-dot{position:absolute;top:-4px;left:-4px;min-width:15px;height:15px;padding:0 3px;border-radius:8px;background:var(--danger);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
 .chat-badge-dot.hidden{display:none}
 #chat-modal .modal-sheet{max-height:78vh;display:flex;flex-direction:column;padding:10px 16px 16px}
 .chat-header{display:flex;align-items:center;justify-content:space-between;padding:0 4px 10px;border-bottom:1px solid var(--border)}
-.chat-header-title{font-size:15px;font-weight:800}
+.chat-header-title{font-size:15px;font-weight:700}
 .chat-close-btn{background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;padding:4px}
 .chat-messages{flex:1;overflow-y:auto;padding:14px 4px;display:flex;flex-direction:column;gap:8px;min-height:200px}
 .chat-empty{text-align:center;color:var(--text-muted);font-size:13px;margin:auto}
 .chat-bubble{max-width:78%;padding:9px 13px;border-radius:16px;font-size:13.5px;line-height:1.5;word-break:break-word}
 .chat-bubble.me{align-self:flex-start;background:var(--primary);color:#fff;border-bottom-left-radius:4px}
 .chat-bubble.them{align-self:flex-end;background:var(--surface2);color:var(--text);border-bottom-right-radius:4px}
-.chat-bubble-time{font-size:10px;opacity:.7;margin-top:3px;display:block}
+.chat-bubble-time{font-size:11px;opacity:.7;margin-top:3px;display:block}
 .chat-input-row{display:flex;gap:8px;padding-top:10px;border-top:1px solid var(--border)}
-.chat-input{flex:1;padding:11px 14px;background:var(--surface);border:1.5px solid var(--border2);border-radius:20px;font-family:'Cairo',sans-serif;font-size:13px;color:var(--text);outline:none}
+.chat-input{flex:1;padding:11px 14px;background:var(--surface);border:1.5px solid var(--border2);border-radius:20px;font-family:var(--font);font-size:13px;color:var(--text);outline:none}
 .chat-send-btn{width:42px;height:42px;border-radius:50%;border:none;background:var(--primary);color:#fff;font-size:16px;cursor:pointer;flex-shrink:0}
 .chat-send-btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* =====================================================================
+   PRO THEME — تطبيق الطيار (مظهر فقط، السلوك زي ما هو)
+   مبني للاستخدام بإيد واحدة في الشارع: أزرار كبيرة، أرقام واضحة، تباين عالي
+   ===================================================================== */
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--font);font-size:14px;line-height:1.55;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+button,input,select,textarea{font-family:var(--font)}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:6px}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+input:focus-visible,textarea:focus-visible{outline:none}
+
+.ic{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;display:inline-block;vertical-align:-3px}
+
+/* على الشاشات الكبيرة: عمود واحد في النص زي الموبايل */
+#app{max-width:640px;margin:0 auto;background:var(--dark3);border-left:1px solid var(--border);border-right:1px solid var(--border)}
+
+/* ---------- تسجيل الدخول ---------- */
+.login-bg{display:none}
+.login-card{border-radius:var(--r-lg);padding:32px 24px 26px;box-shadow:0 24px 60px rgba(0,0,0,.35);animation:none}
+.login-logo{width:56px;height:56px;border-radius:14px;background:var(--primary-strong);box-shadow:none;animation:none;color:#fff;font-size:0;margin-bottom:18px}
+.login-logo .ic{width:26px;height:26px;stroke-width:2;vertical-align:0}
+.login-title{font-size:20px;font-weight:700;margin-bottom:6px}
+.login-title span{background:none;-webkit-text-fill-color:currentColor;color:inherit}
+.login-sub{font-size:13px;margin-bottom:24px}
+.inp-label{font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:7px}
+.inp-icon{font-size:0;color:var(--text-muted);display:flex}
+.inp-icon .ic{width:18px;height:18px}
+.login-inp{border-width:1px;padding:14px 44px;font-size:16px;min-height:50px}
+.login-inp:focus{background:var(--surface);box-shadow:0 0 0 3px var(--primary-glow)}
+.login-inp.error{background:var(--surface)}
+.pass-toggle{font-size:0;display:flex;padding:8px;left:6px}
+.pass-toggle .ic{width:18px;height:18px}
+.login-error{font-weight:500;font-size:13px}
+.login-btn{background:var(--primary-strong);box-shadow:none;border-radius:var(--r-sm);font-size:15px;font-weight:600;min-height:50px}
+.login-btn:hover{transform:none;box-shadow:none;background:var(--primary-strong-h)}
+
+/* ---------- الشريط العلوي ---------- */
+.topbar{height:calc(52px + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0px) 12px 0;border-bottom:1px solid var(--border)}
+.tb-brand{gap:10px}
+.tb-brand-icon{width:32px;height:32px;border-radius:9px;background:var(--primary-strong);box-shadow:none;color:#fff;font-size:0}
+.tb-brand-icon .ic{width:17px;height:17px;stroke-width:2;vertical-align:0}
+.tb-brand-name{background:none;-webkit-text-fill-color:currentColor;color:var(--text);font-size:16px;font-weight:700;line-height:1.2}
+.tb-brand-sub{display:block;font-size:11px;color:var(--text-muted);margin-top:0;line-height:1.2}
+.tb-right{gap:8px}
+.online-pill{background:var(--st-ready-bg);border:1px solid var(--st-ready-bd);color:var(--st-ready);padding:4px 10px;font-size:12px;font-weight:600;gap:6px}
+.online-pill .ic{width:13px;height:13px}
+.online-dot{background:var(--st-ready)}
+.driver-badge{background:transparent;border:none;padding:0;gap:6px}
+.driver-avatar{width:26px;height:26px;background:var(--surface2);border:1px solid var(--border);font-size:0;color:var(--text-muted)}
+.driver-avatar .ic{width:14px;height:14px}
+.driver-name{font-size:12px;font-weight:500;max-width:84px}
+.logout-btn{width:38px;height:38px;border-radius:var(--r-sm);font-size:0}
+.logout-btn .ic{width:18px;height:18px}
+.logout-btn:hover{background:var(--st-cancelled-bg);border-color:var(--st-cancelled-bd);color:var(--st-cancelled)}
+#theme-toggle-btn:hover{background:var(--surface2);border-color:var(--border2);color:var(--text)}
+@media(max-width:420px){.driver-badge{display:none}}
+
+/* ---------- التبويبات ---------- */
+.tab-btn{min-height:54px;padding:8px 6px 7px;font-size:12px;font-weight:500;gap:3px;justify-content:center;border-bottom-width:2px}
+.tab-btn.active{color:var(--text);font-weight:600}
+.tab-btn.active .tab-icon{color:var(--primary)}
+.tab-icon{font-size:0;display:flex}
+.tab-icon .ic{width:20px;height:20px;vertical-align:0}
+.tab-badge{top:6px;right:calc(50% - 24px);background:#C93B42;font-size:11px;font-weight:700;padding:0 5px;min-width:18px;height:18px;line-height:18px;border-radius:9px}
+
+/* ---------- شرائط الحالة (شيفت / استراحة / GPS) ---------- */
+.break-strip{padding:9px 14px;font-size:13px;font-weight:500;gap:10px;border-bottom:1px solid var(--border)}
+.break-strip span{display:flex;align-items:center;gap:8px;line-height:1.45}
+.break-strip button{min-height:32px;padding:4px 14px;border-radius:999px;font-size:12px;font-weight:600}
+.break-strip.pending,.break-strip.gps-wait{background:var(--st-pending-bg);color:var(--st-pending)}
+.break-strip.active{background:var(--st-preparing-bg);color:var(--st-preparing)}
+.break-strip.ended,.break-strip.rejected,.break-strip.gps-off{background:var(--st-cancelled-bg);color:var(--st-cancelled)}
+.break-strip.gps-ok{background:var(--st-ready-bg);color:var(--st-ready)}
+
+/* ---------- الطلبات ---------- */
+.tab-panel{padding:14px 14px calc(28px + env(safe-area-inset-bottom,0px))}
+.orders-header{margin-bottom:10px}
+.orders-title{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px}
+.orders-title .ic{color:var(--text-muted);width:18px;height:18px}
+.orders-count{background:transparent;border:none;padding:0;font-size:13px;font-weight:500}
+.break-btn{display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:0 12px;border-radius:999px;font-size:12px;font-weight:600;background:transparent;color:var(--text);border:1px solid var(--border2)}
+.break-btn:active{background:var(--surface2)}
+.filter-strip{gap:6px;margin-bottom:12px}
+.filter-chip{min-height:34px;padding:0 14px;font-size:13px;font-weight:500;border-radius:999px}
+.filter-chip.active{background:var(--text);color:var(--dark2);border-color:var(--text);font-weight:600}
+
+.order-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:12px;animation:none;cursor:default;display:block}
+.order-card:hover{background:var(--surface);border-color:var(--border2)}
+.order-card.status-pending,.order-card.status-preparing,.order-card.status-ready,.order-card.status-delivered,.order-card.status-cancelled{border-right-width:4px}
+.order-card.status-pending{border-right-color:var(--st-pending)}
+.order-card.status-preparing{border-right-color:var(--st-preparing)}
+.order-card.status-ready{border-right-color:var(--st-ready)}
+.order-card.status-delivered{border-right-color:var(--st-delivered);opacity:.72;padding:12px 14px}
+.order-card.status-cancelled{border-right-color:var(--st-cancelled);opacity:.62;padding:12px 14px}
+.order-card.status-delivered .card-quick,.order-card.status-cancelled .card-quick{display:none}
+
+.card-top{margin-bottom:10px;gap:10px}
+.card-code{font-size:16px;font-weight:700;color:var(--text);line-height:1.2;direction:ltr;unicode-bidi:isolate;display:inline-block}
+.card-time{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-muted);margin-top:3px}
+.card-time .ic{width:13px;height:13px;vertical-align:0}
+.status-badge{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;font-size:12px;font-weight:600;border-radius:999px;border:1px solid transparent}
+.status-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
+.badge-pending{background:var(--st-pending-bg);color:var(--st-pending);border-color:var(--st-pending-bd)}
+.badge-preparing{background:var(--st-preparing-bg);color:var(--st-preparing);border-color:var(--st-preparing-bd)}
+.badge-ready{background:var(--st-ready-bg);color:var(--st-ready);border-color:var(--st-ready-bd)}
+.badge-delivered{background:var(--st-delivered-bg);color:var(--st-delivered);border-color:var(--st-delivered-bd)}
+.badge-cancelled{background:var(--st-cancelled-bg);color:var(--st-cancelled);border-color:var(--st-cancelled-bd)}
+
+.card-client{margin-bottom:10px}
+.client-avatar{display:none}
+.client-info{display:flex;flex-direction:column;gap:1px}
+.client-name{font-size:15px;font-weight:600}
+.client-phone{font-size:13px;color:var(--text-muted)}
+
+.card-address{background:var(--surface2);border:none;border-radius:var(--r-sm);padding:10px 12px;margin-bottom:10px;gap:10px;font-size:14px}
+.addr-icon{font-size:0;color:var(--primary);margin-top:2px}
+.addr-icon .ic{width:18px;height:18px;vertical-align:0}
+.addr-zone{font-size:15px;font-weight:600;margin-bottom:0}
+.addr-detail{font-size:13px;line-height:1.55;margin-top:2px}
+
+.card-quick{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.card-quick>*{flex:1 1 0;min-width:92px}
+.call-btn,.location-btn,.chat-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:0 10px;margin:0;border-radius:var(--r-sm);font-size:13px;font-weight:600;background:var(--surface2);border:1px solid var(--border2);color:var(--text);text-decoration:none;position:relative;cursor:pointer;transition:background .15s}
+.call-btn:hover,.location-btn:hover,.chat-btn:hover,.call-btn:active,.location-btn:active,.chat-btn:active{background:var(--surface)}
+.call-btn .ic{color:var(--st-ready)}
+.location-btn .ic{color:var(--st-preparing)}
+.chat-btn .ic{color:var(--text-muted)}
+.chat-badge-dot{top:-6px;left:-6px;min-width:18px;height:18px;font-size:11px;font-weight:700;background:#C93B42;border-radius:9px}
+
+.card-items{font-size:13px;line-height:1.65;margin-bottom:8px;padding-right:10px;border-right:2px solid var(--border2);color:var(--text-muted)}
+.card-items strong{color:var(--text);font-weight:600}
+.card-items .ic{vertical-align:-3px;margin-left:4px}
+
+.card-footer{margin-top:4px;padding-top:10px;border-top:1px solid var(--border);align-items:flex-end}
+.card-amounts{gap:20px}
+.amount-item{text-align:right}
+.amount-num{font-size:18px;font-weight:700;color:var(--text);line-height:1.2}
+.amount-item:last-child .amount-num{font-size:22px}
+.amount-lbl{font-size:12px;font-weight:500;color:var(--text-muted);margin-top:1px}
+.payment-tag{padding:3px 10px;font-size:12px;font-weight:600;border-radius:6px}
+.pay-cash{background:var(--st-ready-bg);color:var(--st-ready)}
+.pay-vodafone{background:var(--st-cancelled-bg);color:var(--st-cancelled)}
+.pay-instapay{background:rgba(169,139,232,.12);color:var(--purple)}
+.pay-other{background:var(--surface2);color:var(--text-muted)}
+
+/* ---------- أزرار الإجراء (الزر الرئيسي بلون الحالة اللي هينقل ليها) ---------- */
+.status-actions{margin-top:12px;padding-top:12px;gap:8px;flex-direction:row;flex-wrap:nowrap;border-top:1px solid var(--border)}
+.action-btn{min-height:50px;min-width:0;padding:0 14px;font-size:15px;font-weight:600;border-radius:var(--r-sm);border:1px solid transparent;gap:8px;flex:1}
+.action-btn:active{transform:scale(.985)}
+.action-btn:disabled{opacity:.55}
+.btn-accept{background:#1F6FC4;color:#fff;border-color:transparent}
+.btn-accept:hover{background:#1A5FA8}
+.btn-ready{background:#12805A;color:#fff;border-color:transparent}
+.btn-ready:hover{background:#0E6D4D}
+.btn-delivered{background:var(--primary-strong);color:#fff;border-color:transparent}
+.btn-delivered:hover{background:var(--primary-strong-h)}
+.btn-note{flex:0 0 auto;padding:0 16px;background:transparent;color:var(--text);border:1px solid var(--border2);font-size:13px;font-weight:500}
+.btn-note:hover{background:var(--surface2)}
+.pending-glow{animation:ringPulse 2s ease-in-out infinite}
+@keyframes ringPulse{0%,100%{box-shadow:0 0 0 0 rgba(31,111,196,.45)}50%{box-shadow:0 0 0 6px rgba(31,111,196,0)}}
+.status-actions .lock-note{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;font-size:13px;color:var(--text-muted)}
+
+.note-inp,.modal-textarea,.exit-reason,.chat-input{font-size:16px;border-width:1px}
+.note-send-btn{background:var(--primary-strong);font-weight:600}
+
+.empty-state{padding:64px 20px}
+.empty-icon{font-size:0;opacity:1;color:var(--text-dim);margin-bottom:12px}
+.empty-icon .ic{width:44px;height:44px;stroke-width:1.25;vertical-align:0}
+.empty-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:4px}
+.empty-sub{font-size:13px}
+
+/* ---------- الأرباح ---------- */
+.earnings-summary{gap:10px}
+.earn-card{background:var(--surface);border-radius:var(--r);padding:16px;text-align:right}
+.earn-icon{font-size:0;color:var(--text-muted);margin-bottom:10px;display:flex}
+.earn-icon .ic{width:20px;height:20px;vertical-align:0}
+.earn-num{font-size:30px;font-weight:700;color:var(--text);margin-bottom:4px}
+.earn-card.full .earn-num{color:var(--st-ready)}
+.earn-lbl{font-size:12px;font-weight:500;color:var(--text-muted)}
+.earn-section-title{font-size:13px;font-weight:600;color:var(--text-muted);display:flex;align-items:center;gap:7px;margin:8px 0 10px}
+.earn-row{background:var(--surface);border-radius:var(--r-sm);padding:12px 14px}
+.earn-row-code{font-size:14px;font-weight:600;color:var(--text)}
+.earn-row-time{font-size:12px;margin-top:2px}
+.earn-row-amount{font-size:16px;font-weight:700;color:var(--st-ready)}
+
+/* ---------- حسابي ---------- */
+.profile-card{background:var(--surface);border-radius:var(--r);padding:22px}
+.profile-avatar{width:64px;height:64px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);box-shadow:none;font-size:0;color:var(--text-muted);margin-bottom:12px}
+.profile-avatar .ic{width:28px;height:28px;vertical-align:0}
+.profile-name{font-size:20px;font-weight:700}
+.profile-role{font-size:13px}
+.stat-box{background:var(--surface);border-radius:var(--r-sm)}
+.stat-num{font-size:22px;font-weight:700;color:var(--text)}
+.stat-lbl{font-size:12px;font-weight:500}
+.profile-section{background:var(--surface);border-radius:var(--r)}
+.profile-section-title{font-size:13px;font-weight:600}
+.profile-row-label{font-weight:500}
+.profile-row-label .ic{color:var(--text-muted)}
+.profile-row-val{font-weight:600}
+.logout-big-btn{min-height:50px;font-weight:600;border-radius:var(--r-sm)}
+
+/* ---------- النوافذ ---------- */
+.modal-backdrop{background:rgba(6,10,14,.62);backdrop-filter:blur(3px)}
+.modal-sheet{border-radius:var(--r-lg) var(--r-lg) 0 0;padding:12px 20px calc(20px + env(safe-area-inset-bottom,0px));background:var(--dark2)}
+.modal-handle{margin-bottom:16px}
+.modal-title{font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:14px}
+.modal-title .ic{color:var(--text-muted);width:18px;height:18px}
+.modal-cancel,.modal-confirm{min-height:50px;font-size:14px;font-weight:600;border-radius:var(--r-sm)}
+.modal-confirm{background:var(--primary-strong);box-shadow:none;display:flex;align-items:center;justify-content:center;gap:8px}
+.modal-confirm:hover{opacity:1;background:var(--primary-strong-h)}
+.exit-note{font-size:13px}
+.break-options{gap:8px}
+.break-opt{min-height:68px;border-radius:var(--r-sm);font-size:22px;font-weight:700;padding:10px 6px}
+.break-opt small{font-size:12px;font-weight:500}
+.break-opt:active{background:var(--st-pending-bg);border-color:var(--st-pending)}
+.break-btn.hidden{display:none}
+
+.shift-overlay{background:var(--dark3)}
+.shift-emoji{font-size:0;width:56px;height:56px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;color:var(--text-muted)}
+.shift-emoji .ic{width:26px;height:26px;vertical-align:0}
+.shift-title{font-size:22px;font-weight:700}
+.shift-sub{font-size:13px}
+.shift-opt{border-radius:var(--r);font-size:30px;font-weight:700;padding:18px 8px}
+.shift-opt small{font-size:12px;font-weight:500}
+.shift-opt.selected{border-color:var(--primary);background:var(--primary-glow);color:var(--text)}
+.shift-start-btn{background:var(--primary-strong);border-radius:var(--r-sm);min-height:52px;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:none}
+.shift-link{font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:6px}
+
+.chat-header-title{font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px}
+.chat-close-btn{font-size:0;display:flex;padding:8px}
+.chat-close-btn .ic{width:20px;height:20px}
+.chat-bubble{border-radius:14px;font-size:14px}
+.chat-bubble.me{background:var(--primary-strong)}
+.chat-send-btn{background:var(--primary-strong);font-size:0;display:flex;align-items:center;justify-content:center}
+.chat-send-btn .ic{width:18px;height:18px;vertical-align:0}
+
+.toast{border-radius:12px;font-weight:500;bottom:calc(28px + env(safe-area-inset-bottom,0px));padding:12px 20px}
+.new-order-notif{background:var(--primary-strong);box-shadow:0 8px 24px rgba(0,0,0,.35);border-radius:999px;font-weight:600;padding:12px 22px;bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
 </style>
 <script>
 if ('serviceWorker' in navigator) {
@@ -641,36 +899,37 @@ if ('serviceWorker' in navigator) {
 </script>
 </head>
 <body>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true"><symbol id="i-navigation" viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"/></symbol><symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol><symbol id="i-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol><symbol id="i-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol><symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol><symbol id="i-pin" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></symbol><symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol><symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol><symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/></symbol><symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></symbol><symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></symbol><symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></symbol><symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></symbol><symbol id="i-chart" viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></symbol><symbol id="i-wallet" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M16 15h2"/></symbol><symbol id="i-refresh" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></symbol><symbol id="i-check-square" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></symbol><symbol id="i-list" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></symbol><symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol><symbol id="i-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol><symbol id="i-tag" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></symbol><symbol id="i-sliders" viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></symbol><symbol id="i-filter" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></symbol><symbol id="i-map" viewBox="0 0 24 24"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></symbol><symbol id="i-card" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></symbol><symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></symbol><symbol id="i-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol><symbol id="i-bag" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></symbol><symbol id="i-inbox" viewBox="0 0 24 24"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></symbol><symbol id="i-trash" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></symbol><symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol><symbol id="i-external" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></symbol><symbol id="i-save" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></symbol><symbol id="i-coffee" viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></symbol><symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol><symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol><symbol id="i-check-circle" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></symbol><symbol id="i-x-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></symbol><symbol id="i-send" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></symbol><symbol id="i-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol><symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></symbol><symbol id="i-edit" viewBox="0 0 24 24"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></symbol><symbol id="i-package" viewBox="0 0 24 24"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></symbol><symbol id="i-play" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></symbol><symbol id="i-award" viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></symbol></svg>
 
 <!-- ===== LOGIN SCREEN ===== -->
 <div id="login-screen">
   <div class="login-bg"></div>
   <div class="login-card">
-    <div class="login-logo">🛵</div>
+    <div class="login-logo"><svg class="ic" aria-hidden="true"><use href="#i-navigation"/></svg></div>
     <div class="login-title">أهلاً بيك في <span>هات</span></div>
     <div class="login-sub">ادخل بيانات الطيار عشان تكمل</div>
 
     <div class="inp-group">
-      <div class="inp-label">👤 اسم المستخدم</div>
+      <div class="inp-label">اسم المستخدم</div>
       <div class="inp-wrap">
-        <span class="inp-icon">👤</span>
+        <span class="inp-icon"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg></span>
         <input type="text" id="login-username" class="login-inp" placeholder="ادخل اسم المستخدم..." autocomplete="username" autocorrect="off" autocapitalize="none"/>
       </div>
     </div>
 
     <div class="inp-group">
-      <div class="inp-label">🔒 كلمة السر</div>
+      <div class="inp-label">كلمة السر</div>
       <div class="inp-wrap">
-        <span class="inp-icon">🔒</span>
+        <span class="inp-icon"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg></span>
         <input type="password" id="login-password" class="login-inp" placeholder="ادخل كلمة السر..."/>
-        <span class="pass-toggle" id="pass-toggle" title="إظهار/إخفاء">👁</span>
+        <span class="pass-toggle" id="pass-toggle" title="إظهار/إخفاء" role="button" aria-label="إظهار أو إخفاء كلمة السر"><svg class="ic" aria-hidden="true"><use href="#i-eye"/></svg></span>
       </div>
     </div>
 
-    <div class="login-error" id="login-error">❌ اسم المستخدم أو كلمة السر غلط</div>
+    <div class="login-error" id="login-error">اسم المستخدم أو كلمة السر غلط</div>
 
     <button class="login-btn" id="login-btn" onclick="doLogin()">
-      <span id="login-btn-text">دخول 🚀</span>
+      <span id="login-btn-text">دخول</span>
     </button>
   </div>
 </div>
@@ -681,7 +940,7 @@ if ('serviceWorker' in navigator) {
   <!-- TOP BAR -->
   <div class="topbar">
     <div class="tb-brand">
-      <div class="tb-brand-icon">🛵</div>
+      <div class="tb-brand-icon"><svg class="ic" aria-hidden="true"><use href="#i-navigation"/></svg></div>
       <div>
         <div class="tb-brand-name">هات</div>
         <div class="tb-brand-sub">الطيار</div>
@@ -693,27 +952,27 @@ if ('serviceWorker' in navigator) {
         <span id="online-pill-text">مباشر</span>
       </div>
       <div class="driver-badge">
-        <div class="driver-avatar">🛵</div>
+        <div class="driver-avatar"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg></div>
         <div class="driver-name" id="topbar-driver-name">—</div>
       </div>
-      <button class="logout-btn" id="theme-toggle-btn" onclick="toggleTheme()" title="الوضع الليلي/النهاري">🌙</button>
-      <button class="logout-btn" onclick="doLogout()" title="تسجيل خروج">🚪</button>
+      <button class="logout-btn" id="theme-toggle-btn" onclick="toggleTheme()" title="الوضع الليلي/النهاري" aria-label="تبديل الوضع الليلي والنهاري"><svg class="ic" aria-hidden="true"><use href="#i-moon"/></svg></button>
+      <button class="logout-btn" onclick="doLogout()" title="تسجيل خروج" aria-label="تسجيل خروج"><svg class="ic" aria-hidden="true"><use href="#i-logout"/></svg></button>
     </div>
   </div>
 
   <!-- TABS BAR -->
   <div class="tabs-bar">
     <button class="tab-btn active" onclick="switchTab('orders')" id="tab-orders">
-      <span class="tab-icon">📋</span>
+      <span class="tab-icon"><svg class="ic" aria-hidden="true"><use href="#i-list"/></svg></span>
       <span>الطلبات</span>
       <span class="tab-badge" id="pending-badge"></span>
     </button>
     <button class="tab-btn" onclick="switchTab('earnings')" id="tab-earnings">
-      <span class="tab-icon">💰</span>
+      <span class="tab-icon"><svg class="ic" aria-hidden="true"><use href="#i-wallet"/></svg></span>
       <span>أرباحي</span>
     </button>
     <button class="tab-btn" onclick="switchTab('profile')" id="tab-profile">
-      <span class="tab-icon">👤</span>
+      <span class="tab-icon"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg></span>
       <span>حسابي</span>
     </button>
   </div>
@@ -728,19 +987,19 @@ if ('serviceWorker' in navigator) {
     <!-- ORDERS PANEL -->
     <div class="tab-panel active" id="panel-orders">
       <div class="orders-header">
-        <div class="orders-title">📋 الطلبات</div>
+        <div class="orders-title">الطلبات</div>
         <div style="display:flex;align-items:center;gap:6px">
-          <button class="break-btn" id="break-btn" onclick="openBreakModal()">☕ استراحة</button>
+          <button class="break-btn" id="break-btn" onclick="openBreakModal()"><svg class="ic" aria-hidden="true"><use href="#i-coffee"/></svg><span>استراحة</span></button>
           <div class="orders-count" id="orders-count-text">0 طلب</div>
         </div>
       </div>
       <div class="filter-strip">
         <button class="filter-chip active" data-filter="all" onclick="setFilter(this,'all')">الكل</button>
-        <button class="filter-chip" data-filter="pending" onclick="setFilter(this,'pending')">⏳ جديد</button>
-        <button class="filter-chip" data-filter="preparing" onclick="setFilter(this,'preparing')">🔄 جاري</button>
-        <button class="filter-chip" data-filter="ready" onclick="setFilter(this,'ready')">✅ جاهز</button>
-        <button class="filter-chip" data-filter="delivered" onclick="setFilter(this,'delivered')">📦 اتسلم</button>
-        <button class="filter-chip" data-filter="cancelled" onclick="setFilter(this,'cancelled')">❌ ملغي</button>
+        <button class="filter-chip" data-filter="pending" onclick="setFilter(this,'pending')">جديد</button>
+        <button class="filter-chip" data-filter="preparing" onclick="setFilter(this,'preparing')">جاري التحضير</button>
+        <button class="filter-chip" data-filter="ready" onclick="setFilter(this,'ready')">جاهز</button>
+        <button class="filter-chip" data-filter="delivered" onclick="setFilter(this,'delivered')">اتسلم</button>
+        <button class="filter-chip" data-filter="cancelled" onclick="setFilter(this,'cancelled')">ملغي</button>
       </div>
       <div id="orders-list"></div>
     </div>
@@ -749,29 +1008,29 @@ if ('serviceWorker' in navigator) {
     <div class="tab-panel" id="panel-earnings">
       <div class="earnings-summary">
         <div class="earn-card">
-          <div class="earn-icon">💰</div>
+          <div class="earn-icon"><svg class="ic" aria-hidden="true"><use href="#i-wallet"/></svg></div>
           <div class="earn-num" id="earn-today">0</div>
           <div class="earn-lbl">جنيه النهارده</div>
         </div>
         <div class="earn-card">
-          <div class="earn-icon">📦</div>
+          <div class="earn-icon"><svg class="ic" aria-hidden="true"><use href="#i-package"/></svg></div>
           <div class="earn-num" id="earn-orders-today">0</div>
           <div class="earn-lbl">طلب النهارده</div>
         </div>
         <div class="earn-card full">
-          <div class="earn-icon">🏆</div>
+          <div class="earn-icon"><svg class="ic" aria-hidden="true"><use href="#i-award"/></svg></div>
           <div class="earn-num" id="earn-total">0</div>
           <div class="earn-lbl">إجمالي الأرباح (كل الوقت)</div>
         </div>
       </div>
-      <div class="earn-section-title">📋 الطلبات المكتملة</div>
+      <div class="earn-section-title"><svg class="ic" aria-hidden="true"><use href="#i-list"/></svg>الطلبات المكتملة</div>
       <div id="earn-list"></div>
     </div>
 
     <!-- PROFILE PANEL -->
     <div class="tab-panel" id="panel-profile">
       <div class="profile-card">
-        <div class="profile-avatar">🛵</div>
+        <div class="profile-avatar"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg></div>
         <div class="profile-name" id="profile-name-text">—</div>
         <div class="profile-role">طيار توصيل</div>
       </div>
@@ -794,20 +1053,20 @@ if ('serviceWorker' in navigator) {
       <div class="profile-section">
         <div class="profile-section-title">معلومات الحساب</div>
         <div class="profile-row">
-          <span class="profile-row-label">👤 اسم المستخدم</span>
+          <span class="profile-row-label"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>اسم المستخدم</span>
           <span class="profile-row-val" id="profile-username-text">—</span>
         </div>
         <div class="profile-row">
-          <span class="profile-row-label">🛵 الدور</span>
+          <span class="profile-row-label"><svg class="ic" aria-hidden="true"><use href="#i-navigation"/></svg>الدور</span>
           <span class="profile-row-val">طيار توصيل</span>
         </div>
         <div class="profile-row">
-          <span class="profile-row-label">📡 الحالة</span>
+          <span class="profile-row-label"><svg class="ic" aria-hidden="true"><use href="#i-check-circle"/></svg>الحالة</span>
           <span class="profile-row-val" style="color:var(--success)">● مباشر</span>
         </div>
       </div>
 
-      <button class="logout-big-btn" onclick="doLogout()">🚪 تسجيل خروج</button>
+      <button class="logout-big-btn" onclick="doLogout()"><svg class="ic" aria-hidden="true"><use href="#i-logout"/></svg><span>تسجيل خروج</span></button>
     </div>
   </div>
 </div>
@@ -817,11 +1076,11 @@ if ('serviceWorker' in navigator) {
 <div class="modal-backdrop" id="note-modal">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <div class="modal-title">✏️ أضف ملاحظة للعميل</div>
+    <div class="modal-title"><svg class="ic" aria-hidden="true"><use href="#i-edit"/></svg>أضف ملاحظة للعميل</div>
     <textarea class="modal-textarea" id="note-textarea" placeholder="اكتب ملاحظتك هنا... (مثال: الأسانسير شغال، انتظرني تحت)" rows="4"></textarea>
     <div class="modal-actions">
       <button class="modal-cancel" onclick="closeNoteModal()">إلغاء</button>
-      <button class="modal-confirm" onclick="sendNote()">📤 ابعت الملاحظة</button>
+      <button class="modal-confirm" onclick="sendNote()"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg><span>ابعت الملاحظة</span></button>
     </div>
   </div>
 </div>
@@ -829,7 +1088,7 @@ if ('serviceWorker' in navigator) {
 <!-- ===== SHIFT OVERLAY ===== -->
 <div class="shift-overlay hidden" id="shift-overlay">
   <div class="shift-card">
-    <div class="shift-emoji">🕐</div>
+    <div class="shift-emoji"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg></div>
     <div class="shift-title">ابدأ شيفتك</div>
     <div class="shift-loading" id="shift-loading">جاري التحميل...</div>
     <div id="shift-picker" class="hidden">
@@ -840,10 +1099,10 @@ if ('serviceWorker' in navigator) {
         <button class="shift-opt" data-hours="10" onclick="selectShiftOption(10)">10<small>ساعات</small></button>
         <button class="shift-opt" data-hours="12" onclick="selectShiftOption(12)">12<small>ساعة</small></button>
       </div>
-      <button class="shift-start-btn" id="shift-start-btn" disabled onclick="confirmStartShift()">▶️ ابدأ الشيفت</button>
+      <button class="shift-start-btn" id="shift-start-btn" disabled onclick="confirmStartShift()"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg><span>ابدأ الشيفت</span></button>
     </div>
     <button class="shift-link hidden" id="shift-cancel-btn" onclick="closeShiftPicker()">رجوع</button>
-    <button class="shift-link" onclick="doLogout()">🚪 تسجيل خروج</button>
+    <button class="shift-link" onclick="doLogout()"><svg class="ic" aria-hidden="true"><use href="#i-logout"/></svg><span>تسجيل خروج</span></button>
   </div>
 </div>
 
@@ -851,12 +1110,12 @@ if ('serviceWorker' in navigator) {
 <div class="modal-backdrop" id="exit-modal">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <div class="modal-title">🔒 الشيفت لسه شغال</div>
+    <div class="modal-title"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg>الشيفت لسه شغال</div>
     <div class="exit-note" id="exit-note">مينفعش تسجّل خروج قبل انتهاء الشيفت. لو عندك مشكلة اكتب السبب وهنبعت طلب للمدير.</div>
     <textarea class="exit-reason" id="exit-reason" maxlength="200" placeholder="اكتب المشكلة اللي بتواجهك..."></textarea>
     <div class="modal-actions">
       <button class="modal-cancel" onclick="closeExitModal()">إلغاء</button>
-      <button class="modal-confirm" onclick="sendExitRequest()">📤 ابعت للمدير</button>
+      <button class="modal-confirm" onclick="sendExitRequest()"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg><span>ابعت للمدير</span></button>
     </div>
   </div>
 </div>
@@ -865,11 +1124,11 @@ if ('serviceWorker' in navigator) {
 <div class="modal-backdrop" id="gps-modal">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <div class="modal-title">📍 لازم تفعّل الموقع (GPS)</div>
+    <div class="modal-title"><svg class="ic" aria-hidden="true"><use href="#i-pin"/></svg>لازم تفعّل الموقع (GPS)</div>
     <div class="exit-note" id="gps-modal-msg"></div>
     <div class="modal-actions">
       <button class="modal-cancel" onclick="closeGpsModal()">إغلاق</button>
-      <button class="modal-confirm" onclick="gpsModalRetry()">🔄 جرّب تاني</button>
+      <button class="modal-confirm" onclick="gpsModalRetry()"><svg class="ic" aria-hidden="true"><use href="#i-refresh"/></svg><span>جرّب تاني</span></button>
     </div>
   </div>
 </div>
@@ -879,13 +1138,13 @@ if ('serviceWorker' in navigator) {
   <div class="modal-sheet">
     <div class="modal-handle"></div>
     <div class="chat-header">
-      <div class="chat-header-title">💬 الشات مع العميل</div>
-      <button type="button" class="chat-close-btn" onclick="closeChat()">✕</button>
+      <div class="chat-header-title"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>الشات مع العميل</div>
+      <button type="button" class="chat-close-btn" onclick="closeChat()" aria-label="إغلاق"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
     </div>
     <div class="chat-messages" id="chat-messages"><div class="chat-empty">لسه مفيش رسايل — ابدأ المحادثة</div></div>
     <div class="chat-input-row">
       <input type="text" class="chat-input" id="chat-input" maxlength="500" placeholder="اكتب رسالتك..." autocomplete="off"/>
-      <button type="button" class="chat-send-btn" id="chat-send-btn" onclick="sendChatMessage()">➤</button>
+      <button type="button" class="chat-send-btn" id="chat-send-btn" onclick="sendChatMessage()" aria-label="إرسال"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg></button>
     </div>
   </div>
 </div>
@@ -894,7 +1153,7 @@ if ('serviceWorker' in navigator) {
 <div class="modal-backdrop" id="break-modal">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <div class="modal-title">☕ اطلب استراحة من المدير</div>
+    <div class="modal-title"><svg class="ic" aria-hidden="true"><use href="#i-coffee"/></svg>اطلب استراحة من المدير</div>
     <div class="break-options">
       <button class="break-opt" onclick="requestBreak(10)">10<small>دقايق</small></button>
       <button class="break-opt" onclick="requestBreak(15)">15<small>دقيقة</small></button>
@@ -913,7 +1172,7 @@ if ('serviceWorker' in navigator) {
 
 <!-- ===== NEW ORDER NOTIF ===== -->
 <div class="new-order-notif" id="new-order-notif" onclick="switchTab('orders');document.getElementById('new-order-notif').classList.remove('show')">
-  🔔 طلب جديد وصل!
+  <svg class="ic" aria-hidden="true"><use href="#i-bell"/></svg> طلب جديد وصل!
 </div>
 
 <script>
@@ -941,7 +1200,7 @@ if ('serviceWorker' in navigator) {
     if (bar) return bar;
     bar = document.createElement('div');
     bar.id = 'conn-banner';
-    bar.style.cssText = 'display:none;position:fixed;top:0;left:0;right:0;z-index:99999;background:#EF476F;color:#fff;text-align:center;font:700 13px "Cairo",sans-serif;padding:9px 14px;box-shadow:0 2px 10px rgba(0,0,0,.25)';
+    bar.style.cssText = 'display:none;position:fixed;top:0;left:0;right:0;z-index:99999;background:#C93B42;color:#fff;text-align:center;font:600 13px "IBM Plex Sans Arabic","Cairo",sans-serif;padding:9px 14px;box-shadow:0 2px 10px rgba(0,0,0,.25)';
     (document.body || document.documentElement).appendChild(bar);
     return bar;
   }
@@ -955,10 +1214,10 @@ if ('serviceWorker' in navigator) {
   window.hideConnBanner = function(){ if (bar) bar.style.display = 'none'; };
   function boot(){
     ensureBar();
-    if (!navigator.onLine) window.showConnBanner('📡 مفيش اتصال بالإنترنت دلوقتي', true);
+    if (!navigator.onLine) window.showConnBanner('مفيش اتصال بالإنترنت دلوقتي', true);
   }
   if (document.body) boot(); else document.addEventListener('DOMContentLoaded', boot);
-  window.addEventListener('offline', function(){ window.showConnBanner('📡 مفيش اتصال بالإنترنت دلوقتي', true); });
+  window.addEventListener('offline', function(){ window.showConnBanner('مفيش اتصال بالإنترنت دلوقتي', true); });
   window.addEventListener('online', function(){ window.hideConnBanner(); });
 })();
 </script>
@@ -977,13 +1236,16 @@ if ('serviceWorker' in navigator) {
       document.documentElement.setAttribute('data-theme', 'light');
       localStorage.setItem(THEME_KEY, 'light');
     }
-    var btn = document.getElementById('theme-toggle-btn');
-    if (btn) btn.textContent = isLight ? '🌙' : '☀️';
+    paintThemeBtn();
   };
-  document.addEventListener('DOMContentLoaded', function() {
+  function paintThemeBtn() {
     var btn = document.getElementById('theme-toggle-btn');
-    if (btn) btn.textContent = document.documentElement.getAttribute('data-theme') === 'light' ? '☀️' : '🌙';
-  });
+    if (!btn) return;
+    var light = document.documentElement.getAttribute('data-theme') === 'light';
+    btn.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-' + (light ? 'sun' : 'moon') + '"/></svg>';
+    btn.title = light ? 'التبديل للوضع الليلي' : 'التبديل للوضع النهاري';
+  }
+  document.addEventListener('DOMContentLoaded', paintThemeBtn);
 })();
 </script>
 <script type="module">
@@ -1034,6 +1296,7 @@ function nowStr() {
   return `${yr}/${mon}/${day} — ${h}:${m}`;
 }
 
+function ic(n,c){return `<svg class="ic${c?' '+c:''}" aria-hidden="true"><use href="#i-${n}"/></svg>`;}
 function esc(str) {
   if (str === null || str === undefined) return '';
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
@@ -1128,11 +1391,11 @@ function showToast(msg, type='', duration=2800) {
 }
 
 const STATUS_META = {
-  pending:    { label:'⏳ جديد',          cls:'badge-pending'   },
-  preparing:  { label:'🔄 جاري',          cls:'badge-preparing' },
-  ready:      { label:'✅ جاهز للتسليم',  cls:'badge-ready'     },
-  delivered:  { label:'📦 اتسلم',         cls:'badge-delivered' },
-  cancelled:  { label:'❌ ملغي',           cls:'badge-cancelled' },
+  pending:    { label:'⏳ جديد',          name:'جديد',          cls:'badge-pending'   },
+  preparing:  { label:'🔄 جاري',          name:'جاري التحضير',  cls:'badge-preparing' },
+  ready:      { label:'✅ جاهز للتسليم',  name:'جاهز للتسليم',  cls:'badge-ready'     },
+  delivered:  { label:'📦 اتسلم',         name:'اتسلم',         cls:'badge-delivered' },
+  cancelled:  { label:'❌ ملغي',           name:'ملغي',          cls:'badge-cancelled' },
 };
 
 function getPayClass(payment) {
@@ -1153,11 +1416,11 @@ window.doLogin = async function() {
   const text = document.getElementById('login-btn-text');
 
   err.classList.remove('show');
-  document.getElementById('login-error').textContent = '❌ اسم المستخدم أو كلمة السر غلط';
+  document.getElementById('login-error').textContent = 'اسم المستخدم أو كلمة السر غلط';
   document.querySelectorAll('.login-inp').forEach(i => i.classList.remove('error'));
 
   if (!username || !password) {
-    document.getElementById('login-error').textContent = '❌ من فضلك ادخل اسم المستخدم وكلمة السر';
+    document.getElementById('login-error').textContent = 'من فضلك ادخل اسم المستخدم وكلمة السر';
     err.classList.add('show');
     if (!username) document.getElementById('login-username').classList.add('error');
     if (!password) document.getElementById('login-password').classList.add('error');
@@ -1176,7 +1439,7 @@ window.doLogin = async function() {
       err.classList.add('show');
       document.getElementById('login-username').classList.add('error');
       document.getElementById('login-password').classList.add('error');
-      btn.disabled = false; text.textContent = 'دخول 🚀';
+      btn.disabled = false; text.textContent = 'دخول';
       return;
     }
 
@@ -1184,9 +1447,9 @@ window.doLogin = async function() {
     const snap = await getDocs(query(collection(db, 'pilots'), where('authUid', '==', cred.user.uid)));
     if (snap.empty) {
       await signOut(auth);
-      err.textContent = '❌ الحساب ده لسه مش متفعّل — كلّم المدير';
+      err.textContent = 'الحساب ده لسه مش متفعّل — كلّم المدير';
       err.classList.add('show');
-      btn.disabled = false; text.textContent = 'دخول 🚀';
+      btn.disabled = false; text.textContent = 'دخول';
       return;
     }
 
@@ -1203,7 +1466,7 @@ window.doLogin = async function() {
     initDriver();
   } catch(e) {
     showToast('❌ خطأ في الاتصال: ' + e.message, 'error');
-    btn.disabled = false; text.textContent = 'دخول 🚀';
+    btn.disabled = false; text.textContent = 'دخول';
   }
 };
 
@@ -1293,16 +1556,16 @@ function renderBreakStrip() {
   strip.className = 'break-strip ' + st;
   const m = Number(currentBreak.minutes) || 0;
   if (st === 'pending') {
-    strip.innerHTML = `<span>⏳ طلب استراحة ${m} دقيقة — في انتظار موافقة المدير</span><button onclick="cancelBreakRequest()">إلغاء الطلب</button>`;
+    strip.innerHTML = `<span>${ic('clock')}طلب استراحة ${m} دقيقة — في انتظار موافقة المدير</span><button onclick="cancelBreakRequest()">إلغاء الطلب</button>`;
   } else if (st === 'active') {
-    strip.innerHTML = `<span>☕ في استراحة — باقي <b id="break-remaining">--:--</b></span><button onclick="endBreak()">رجوع للشغل</button>`;
+    strip.innerHTML = `<span>${ic('coffee')}في استراحة — باقي <b id="break-remaining">--:--</b></span><button onclick="endBreak()">رجوع للشغل</button>`;
     if (!breakTicker) breakTicker = setInterval(tickBreak, 1000);
     tickBreak();
   } else if (st === 'ended') {
-    strip.innerHTML = `<span>⏰ انتهت استراحتك (${m} دقيقة)</span><button onclick="endBreak()">رجوع للشغل</button>`;
+    strip.innerHTML = `<span>${ic('alert')}انتهت استراحتك (${m} دقيقة)</span><button onclick="endBreak()">رجوع للشغل</button>`;
     stopBreakTicker();
   } else if (st === 'rejected') {
-    strip.innerHTML = `<span>❌ المدير رفض طلب الاستراحة</span><button onclick="endBreak()">تمام</button>`;
+    strip.innerHTML = `<span>${ic('x-circle')}المدير رفض طلب الاستراحة</span><button onclick="endBreak()">تمام</button>`;
     stopBreakTicker();
   }
 }
@@ -1453,7 +1716,7 @@ function fmtShiftLeft(ms) {
 function updateShiftChip() {
   const pill = document.getElementById('online-pill-text');
   if (!pill) return;
-  pill.textContent = shiftIsActive(currentShift) ? '⏱ ' + fmtShiftLeft(Number(currentShift.endsAt) - Date.now()) : 'مباشر';
+  pill.innerHTML = shiftIsActive(currentShift) ? ic('clock') + ' ' + fmtShiftLeft(Number(currentShift.endsAt) - Date.now()) : 'مباشر';
 }
 
 function renderShiftOverlay(st) {
@@ -1474,14 +1737,14 @@ function renderShiftStrip(st) {
   const er = currentShift && currentShift.exitRequest && typeof currentShift.exitRequest === 'object' ? currentShift.exitRequest : null;
   if (st === 'active' && er && er.status === 'pending') {
     strip.className = 'break-strip pending';
-    strip.innerHTML = `<span>⏳ طلب إنهاء الشيفت في انتظار المدير</span><button onclick="cancelExitRequest()">إلغاء الطلب</button>`;
+    strip.innerHTML = `<span>${ic('clock')}طلب إنهاء الشيفت في انتظار المدير</span><button onclick="cancelExitRequest()">إلغاء الطلب</button>`;
   } else if (st === 'active' && er && er.status === 'rejected') {
     strip.className = 'break-strip rejected';
-    strip.innerHTML = `<span>❌ المدير رفض إنهاء الشيفت — كمّل شغل</span><button onclick="dismissExitRejected()">تمام</button>`;
+    strip.innerHTML = `<span>${ic('x-circle')}المدير رفض إنهاء الشيفت — كمّل شغل</span><button onclick="dismissExitRejected()">تمام</button>`;
   } else if (st === 'ended') {
     const released = er && er.status === 'approved';
     strip.className = 'break-strip ' + (released ? 'active' : 'ended') + ' multi';
-    strip.innerHTML = `<span>${released ? '✅ المدير وافق على إنهاء شيفتك' : '⏰ انتهى شيفتك'}</span><div class="strip-btns"><button onclick="openShiftPicker()">شيفت جديد</button><button onclick="doLogout()">خروج</button></div>`;
+    strip.innerHTML = `<span>${released ? ic('check-circle') + 'المدير وافق على إنهاء شيفتك' : ic('alert') + 'انتهى شيفتك'}</span><div class="strip-btns"><button onclick="openShiftPicker()">شيفت جديد</button><button onclick="doLogout()">خروج</button></div>`;
   } else {
     strip.className = 'break-strip hidden';
     strip.innerHTML = '';
@@ -1519,8 +1782,8 @@ function applyShiftState() {
   // قفل زرار تسجيل الخروج طول الشيفت
   document.querySelectorAll('.logout-btn, .logout-big-btn').forEach(b => {
     b.classList.toggle('locked', active);
-    if (b.classList.contains('logout-btn')) b.textContent = active ? '🔒' : '🚪';
-    else b.textContent = active ? '🔒 تسجيل الخروج مقفول — الشيفت شغال' : '🚪 تسجيل خروج';
+    if (b.classList.contains('logout-btn')) b.innerHTML = ic(active ? 'lock' : 'logout');
+    else b.innerHTML = active ? ic('lock') + '<span>تسجيل الخروج مقفول — الشيفت شغال</span>' : ic('logout') + '<span>تسجيل خروج</span>';
   });
 
   if (prevSt === 'active' && st === 'ended') {
@@ -1554,7 +1817,7 @@ function resetShiftState() {
   const pill = document.getElementById('online-pill-text'); if (pill) pill.textContent = 'مباشر';
   document.querySelectorAll('.logout-btn, .logout-big-btn').forEach(b => {
     b.classList.remove('locked');
-    b.textContent = b.classList.contains('logout-btn') ? '🚪' : '🚪 تسجيل خروج';
+    b.innerHTML = b.classList.contains('logout-btn') ? ic('logout') : ic('logout') + '<span>تسجيل خروج</span>';
   });
 }
 
@@ -1707,9 +1970,9 @@ async function performLogout() {
   const loginBtn = document.getElementById('login-btn');
   const loginBtnText = document.getElementById('login-btn-text');
   if (loginBtn) loginBtn.disabled = false;
-  if (loginBtnText) loginBtnText.textContent = 'دخول 🚀';
+  if (loginBtnText) loginBtnText.textContent = 'دخول';
   const passToggleEl = document.getElementById('pass-toggle');
-  if (passToggleEl) passToggleEl.textContent = '👁';
+  if (passToggleEl) passToggleEl.innerHTML = ic('eye');
   document.getElementById('orders-list').innerHTML = '';
   document.getElementById('earn-list').innerHTML = '';
   // reset earn counts
@@ -1747,8 +2010,8 @@ function initDriver() {
       if (!banner) {
         banner = document.createElement('div');
         banner.id = 'service-closed-banner';
-        banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9998;background:#EF476F;color:#fff;text-align:center;padding:10px 16px;font-size:14px;font-weight:800;font-family:Cairo,sans-serif;';
-        banner.textContent = '⚠️ الخدمة مغلقة حالياً — لا يمكن استقبال طلبات جديدة';
+        banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9998;background:#C93B42;color:#fff;text-align:center;padding:10px 16px;font-size:14px;font-weight:600;font-family:"IBM Plex Sans Arabic",Cairo,sans-serif;';
+        banner.textContent = 'الخدمة مغلقة حالياً — لا يمكن استقبال طلبات جديدة';
         document.body.prepend(banner);
       }
     } else {
@@ -1850,7 +2113,7 @@ function renderOrders() {
   const list = document.getElementById('orders-list');
   if (count === 0) {
     list.innerHTML = `<div class="empty-state">
-      <div class="empty-icon">📭</div>
+      <div class="empty-icon">${ic('inbox')}</div>
       <div class="empty-title">مفيش طلبات دلوقتي</div>
       <div class="empty-sub">لما يجي طلب هيظهر هنا فوراً</div>
     </div>`;
@@ -1986,25 +2249,28 @@ document.getElementById('chat-input').addEventListener('keydown', e => {
 });
 
 function buildOrderCard(o) {
-  const meta = STATUS_META[o.status] || { label: esc(o.status || '—'), cls: 'badge-pending' };
+  const meta = STATUS_META[o.status] || { label: esc(o.status || '—'), name: esc(o.status || '—'), cls: 'badge-pending' };
   const payCls = getPayClass(o.payment);
   const mapsUrl = o.location && o.location.mapsUrl ? safeUrl(o.location.mapsUrl) : '';
 
   const actions = buildActions(o);
   const locationBtnHtml = mapsUrl
-    ? `<a href="${esc(mapsUrl)}" target="_blank" rel="noopener noreferrer" class="location-btn">🗺 الموقع على الخريطة</a>`
+    ? `<a href="${esc(mapsUrl)}" target="_blank" rel="noopener noreferrer" class="location-btn">${ic('map')}<span>الموقع</span></a>`
     : '';
   const phoneDial  = telDigits(o.phone);
   const phone2Dial = telDigits(o.phone2);
   const callBtnHtml = phoneDial
-    ? `<a href="tel:${esc(phoneDial)}" class="call-btn">📞 كلم العميل</a>`
+    ? `<a href="tel:${esc(phoneDial)}" class="call-btn">${ic('phone')}<span>اتصال</span></a>`
     : '';
   const call2BtnHtml = phone2Dial
-    ? `<a href="tel:${esc(phone2Dial)}" class="call-btn" style="margin-right:6px">📞 الرقم الاحتياطي</a>`
+    ? `<a href="tel:${esc(phone2Dial)}" class="call-btn">${ic('phone')}<span>رقم احتياطي</span></a>`
     : '';
   const oid = esc(o.id);
   const chatBtnHtml = (o.status !== 'delivered' && o.status !== 'cancelled')
-    ? `<button type="button" class="chat-btn" onclick="openChat('${oid}')">💬 شات مع العميل<span class="chat-badge-dot hidden" id="chat-badge-${oid}">0</span></button>`
+    ? `<button type="button" class="chat-btn" onclick="openChat('${oid}')">${ic('chat')}<span>شات</span><span class="chat-badge-dot hidden" id="chat-badge-${oid}">0</span></button>`
+    : '';
+  const quickHtml = (callBtnHtml || call2BtnHtml || locationBtnHtml || chatBtnHtml)
+    ? `<div class="card-quick">${callBtnHtml}${call2BtnHtml}${locationBtnHtml}${chatBtnHtml}</div>`
     : '';
 
   const estimate = num(o.itemsPrice);
@@ -2017,38 +2283,37 @@ function buildOrderCard(o) {
   <div class="card-top">
     <div>
       <div class="card-code">#${esc(o.orderCode || shortId)}</div>
-      <div class="card-time">${esc(o.createdAt || '')}</div>
+      <div class="card-time">${ic('clock')}<span>${esc(o.createdAt || '')}</span></div>
     </div>
-    <span class="status-badge ${meta.cls}">${meta.label}</span>
+    <span class="status-badge ${meta.cls}">${meta.name}</span>
   </div>
 
   <div class="card-client">
-    <div class="client-avatar">🧑</div>
     <div class="client-info">
       <div class="client-name">${esc(o.name || '—')}</div>
       <div class="client-phone">${esc(o.phone || '—')}</div>
-      ${callBtnHtml}${call2BtnHtml}${chatBtnHtml}
     </div>
   </div>
 
   <div class="card-address">
-    <div class="addr-icon">📍</div>
+    <div class="addr-icon">${ic('pin')}</div>
     <div class="addr-text">
       <div class="addr-zone">${esc(o.address || '—')}</div>
       ${o.addressDetail ? `<div class="addr-detail">${esc(o.addressDetail)}</div>` : ''}
-      ${locationBtnHtml}
     </div>
   </div>
 
+  ${quickHtml}
+
   ${o.items ? `<div class="card-items"><strong>الطلب:</strong> ${esc(o.items)}</div>` : ''}
   ${o.category ? `<div class="card-items"><strong>الصنف:</strong> ${esc(o.category)}</div>` : ''}
-  ${o.transferredFrom ? `<div class="card-items" style="color:var(--info)">🔄 الطلب ده محوّل ليك من الطيار: ${esc(o.transferredFrom)}</div>` : ''}
+  ${o.transferredFrom ? `<div class="card-items" style="color:var(--info)">${ic('refresh')}الطلب ده محوّل ليك من الطيار: ${esc(o.transferredFrom)}</div>` : ''}
   ${customerNote ? `<div class="card-items"><strong>ملاحظة العميل:</strong> ${esc(customerNote)}</div>` : ''}
   ${orderNote ? `<div class="card-items"><strong>ملاحظة على الطلب:</strong> ${esc(orderNote)}</div>` : ''}
 
   <div class="card-footer">
     <div class="card-amounts">
-      ${estimate ? `<div class="amount-item"><div class="amount-num" style="color:var(--text-muted);font-size:13px">${estimate}</div><div class="amount-lbl">تقدير العميل</div></div>` : ''}
+      ${estimate ? `<div class="amount-item"><div class="amount-num" style="color:var(--text-muted);font-size:14px">${estimate}</div><div class="amount-lbl">تقدير العميل</div></div>` : ''}
       <div class="amount-item">
         <div class="amount-num">${num(o.deliveryPrice)}</div>
         <div class="amount-lbl">توصيلة</div>
@@ -2071,22 +2336,22 @@ function buildActions(o) {
 
   // الطلب مش معين للطيار ده
   if (!isMine(o)) {
-    return `<div class="status-actions"><div style="font-size:12px;color:var(--text-muted);text-align:center;width:100%">🔒 الطلب ده مش معين ليك</div></div>`;
+    return `<div class="status-actions"><div class="lock-note">${ic('lock')}<span>الطلب ده مش معين ليك</span></div></div>`;
   }
 
   let btns = '';
   const id = esc(o.id);
 
   if (o.status === 'pending') {
-    btns += `<button class="action-btn btn-accept pending-glow" onclick="updateStatus('${id}','preparing')">✅ قبول وبدء الطلب</button>`;
+    btns += `<button class="action-btn btn-accept pending-glow" onclick="updateStatus('${id}','preparing')">${ic('check')}<span>قبول وبدء الطلب</span></button>`;
   }
   if (o.status === 'preparing') {
-    btns += `<button class="action-btn btn-ready" onclick="updateStatus('${id}','ready')">✅ جاهز للتسليم</button>`;
+    btns += `<button class="action-btn btn-ready" onclick="updateStatus('${id}','ready')">${ic('navigation')}<span>جاهز للتسليم</span></button>`;
   }
   if (o.status === 'ready') {
-    btns += `<button class="action-btn btn-delivered" onclick="updateStatus('${id}','delivered')">📦 تم التسليم</button>`;
+    btns += `<button class="action-btn btn-delivered" onclick="updateStatus('${id}','delivered')">${ic('package')}<span>تم التسليم</span></button>`;
   }
-  btns += `<button class="action-btn btn-note" onclick="openNoteModal('${id}')">✏️ ملاحظة</button>`;
+  btns += `<button class="action-btn btn-note" onclick="openNoteModal('${id}')">${ic('edit')}<span>ملاحظة</span></button>`;
 
   return `<div class="status-actions">${btns}</div>`;
 }
@@ -2131,16 +2396,16 @@ function renderGpsStrip() {
   const msg = document.createElement('span');
   if (gpsState === 'ok') {
     el.className = 'break-strip gps-ok';
-    msg.textContent = gpsOrderIds.size > 0 ? '📡 موقعك بيتشارك مع العميل والإدارة' : '📡 موقعك بيتشارك مع الإدارة طول الشيفت';
+    msg.innerHTML = ic('pin') + (gpsOrderIds.size > 0 ? 'موقعك بيتشارك مع العميل والإدارة' : 'موقعك بيتشارك مع الإدارة طول الشيفت');
   } else if (gpsState === 'waiting') {
     el.className = 'break-strip gps-wait';
-    msg.textContent = '📡 بنحدد موقعك...';
+    msg.innerHTML = ic('pin') + 'بنحدد موقعك...';
   } else if (gpsState === 'denied') {
     el.className = 'break-strip gps-off';
-    msg.textContent = gpsOrderIds.size > 0 ? '⚠️ الموقع مقفول — العميل مش شايف مكانك' : '⚠️ الموقع مقفول — الإدارة مش شايفة مكانك';
+    msg.innerHTML = ic('alert') + (gpsOrderIds.size > 0 ? 'الموقع مقفول — العميل مش شايف مكانك' : 'الموقع مقفول — الإدارة مش شايفة مكانك');
   } else {
     el.className = 'break-strip gps-off';
-    msg.textContent = '⚠️ جهازك مش بيدعم تحديد الموقع';
+    msg.innerHTML = ic('alert') + 'جهازك مش بيدعم تحديد الموقع';
   }
   el.appendChild(msg);
   if (gpsState === 'denied') {
@@ -2466,7 +2731,7 @@ function updateEarnings() {
   const earnList = document.getElementById('earn-list');
   if (deliveredOrders.length === 0) {
     earnList.innerHTML = `<div class="empty-state" style="padding:30px 20px">
-      <div class="empty-icon">💸</div>
+      <div class="empty-icon">${ic('wallet')}</div>
       <div class="empty-title">لسه مفيش طلبات مكتملة</div>
     </div>`;
     return;
@@ -2505,8 +2770,8 @@ window.switchTab = function(tab) {
 document.getElementById('pass-toggle').addEventListener('click', () => {
   const inp = document.getElementById('login-password');
   const tog = document.getElementById('pass-toggle');
-  if (inp.type === 'password') { inp.type = 'text'; tog.textContent = '🙈'; }
-  else { inp.type = 'password'; tog.textContent = '👁'; }
+  if (inp.type === 'password') { inp.type = 'text'; tog.innerHTML = ic('eye-off'); }
+  else { inp.type = 'password'; tog.innerHTML = ic('eye'); }
 });
 
 // ========== ENTER KEY LOGIN ==========
